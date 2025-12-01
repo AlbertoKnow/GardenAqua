@@ -58,6 +58,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -189,3 +190,29 @@ WHATSAPP_NUMBER = os.environ.get('WHATSAPP_NUMBER', '51916557975')
 SITE_NAME = os.environ.get('SITE_NAME', 'GardenAqua')
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
 SITE_DESCRIPTION = 'Tu tienda especializada en acuarios y productos para peces'
+
+
+# =============================================================================
+# CONFIGURACIÓN DE PRODUCCIÓN
+# =============================================================================
+# Configuraciones adicionales para entorno de producción
+
+if not DEBUG:
+    # Seguridad HTTPS
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True') == 'True'
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    
+    # HSTS
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # WhiteNoise para archivos estáticos comprimidos
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # Hosts de confianza para CSRF
+    CSRF_TRUSTED_ORIGINS = [
+        f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']
+    ]

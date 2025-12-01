@@ -1,0 +1,60 @@
+# =============================================================================
+# Docker Ignore - GardenAqua
+# =============================================================================
+# Archivos y carpetas que no deben incluirse en la imagen Docker
+
+# Entorno virtual
+.venv/
+venv/
+env/
+
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Base de datos local
+db.sqlite3
+*.db
+
+# Variables de entorno (excepto el ejemplo)
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose*.yml
+
+# Nginx (se monta como volumen)
+nginx/
+
+# Documentación
+*.md
+!README.md
+LICENSE*
+
+# Tests
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Archivos temporales
+*.log
+*.tmp

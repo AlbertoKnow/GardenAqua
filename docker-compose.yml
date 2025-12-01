@@ -1,0 +1,87 @@
+# =============================================================================
+# Docker Compose para GardenAqua
+# =============================================================================
+# Orquesta los servicios: Django, PostgreSQL y Nginx
+
+services:
+  # ---------------------------------------------------------------------------
+  # Base de datos PostgreSQL
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: gardenaqua_db
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME:-gardenaqua}
+      POSTGRES_USER: ${DB_USER:-gardenaqua}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-gardenaqua_secret_2024}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-gardenaqua} -d ${DB_NAME:-gardenaqua}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Aplicación Django con Gunicorn
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: .
+      target: production
+    container_name: gardenaqua_web
+    restart: unless-stopped
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    env_file:
+      - .env.production
+    environment:
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8000"
+
+  # ---------------------------------------------------------------------------
+  # Servidor Nginx (Proxy Reverso)
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: gardenaqua_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - static_volume:/app/staticfiles:ro
+      - media_volume:/app/media:ro
+      - ./nginx/certbot/conf:/etc/letsencrypt:ro
+      - ./nginx/certbot/www:/var/www/certbot:ro
+    depends_on:
+      - web
+
+  # ---------------------------------------------------------------------------
+  # Certbot para certificados SSL (opcional, ejecutar manualmente)
+  # ---------------------------------------------------------------------------
+  certbot:
+    image: certbot/certbot
+    container_name: gardenaqua_certbot
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  postgres_data:
+    name: gardenaqua_postgres_data
+  static_volume:
+    name: gardenaqua_static
+  media_volume:
+    name: gardenaqua_media
