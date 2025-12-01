@@ -13,10 +13,12 @@ services:
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env.production
     environment:
       POSTGRES_DB: ${DB_NAME:-gardenaqua}
       POSTGRES_USER: ${DB_USER:-gardenaqua}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-gardenaqua_secret_2024}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-gardenaqua} -d ${DB_NAME:-gardenaqua}"]
       interval: 10s
