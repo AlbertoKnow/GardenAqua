@@ -1,0 +1,78 @@
+<div class="producto-card">
+    <div class="card-img-wrapper">
+        <!-- Badge -->
+        {% if es_nuevo %}
+        <span class="badge-producto badge-nuevo">Nuevo</span>
+        {% elif es_oferta %}
+        <span class="badge-producto badge-oferta">Oferta</span>
+        {% elif producto.destacado %}
+        <span class="badge-producto badge-nuevo">Destacado</span>
+        {% endif %}
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="{% url 'catalogo:producto_detalle' producto.slug %}" class="quick-action-btn" title="Ver detalle">
+                <i class="bi bi-eye"></i>
+            </a>
+        </div>
+        
+        <!-- Imagen -->
+        <a href="{% url 'catalogo:producto_detalle' producto.slug %}">
+            {% if producto.imagen_principal_url %}
+            <img src="{{ producto.imagen_principal_url }}" class="card-img-top" alt="{{ producto.nombre }}">
+            {% else %}
+            <div class="img-placeholder">
+                <i class="bi bi-image"></i>
+            </div>
+            {% endif %}
+        </a>
+    </div>
+    
+    <div class="card-body">
+        <!-- Categoría -->
+        {% if producto.categoria %}
+        <div class="categoria-badge">{{ producto.categoria.nombre }}</div>
+        {% endif %}
+        
+        <!-- Título -->
+        <h5 class="card-title">
+            <a href="{% url 'catalogo:producto_detalle' producto.slug %}">
+                {{ producto.nombre }}
+            </a>
+        </h5>
+        
+        <!-- Precio -->
+        <div class="precio-wrapper">
+            {% with presentacion=producto.presentacion_principal %}
+                {% if presentacion %}
+                    {% if producto.presentaciones.count > 1 %}
+                    <span class="precio-desde">Desde</span>
+                    {% endif %}
+                    <span class="precio">S/ {{ presentacion.precio }}</span>
+                {% else %}
+                    <span class="precio text-muted">Consultar</span>
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        <!-- Botón Agregar -->
+        {% with presentacion=producto.presentacion_principal %}
+            {% if presentacion and presentacion.stock > 0 %}
+            <form action="{% url 'carrito:agregar' presentacion.id %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="cantidad" value="1">
+                <input type="hidden" name="override" value="False">
+                <button type="submit" class="btn-add-cart">
+                    <i class="bi bi-bag-plus"></i>
+                    Agregar
+                </button>
+            </form>
+            {% else %}
+            <button class="btn-add-cart" disabled>
+                <i class="bi bi-x-circle"></i>
+                Agotado
+            </button>
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>

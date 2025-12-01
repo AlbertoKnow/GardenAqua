@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Pedido - {{ pedido.numero_pedido }}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 40px 0;">
+                <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color: #22c55e; padding: 30px; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 24px;">🛒 ¡Nuevo Pedido!</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Alerta -->
+                    <tr>
+                        <td style="padding: 30px 30px 20px;">
+                            <div style="background-color: #dcfce7; border-left: 4px solid #22c55e; padding: 15px; border-radius: 4px;">
+                                <p style="margin: 0; color: #166534; font-size: 16px;">
+                                    <strong>Tienes un nuevo pedido pendiente de pago.</strong>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Info del Pedido -->
+                    <tr>
+                        <td style="padding: 0 30px 20px;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 10px 0; border-bottom: 1px solid #e5e5e5;">
+                                        <strong style="color: #666;">Número de Pedido:</strong>
+                                    </td>
+                                    <td style="padding: 10px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
+                                        <strong style="color: #000; font-size: 18px;">{{ pedido.numero_pedido }}</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px 0; border-bottom: 1px solid #e5e5e5;">
+                                        <strong style="color: #666;">Fecha:</strong>
+                                    </td>
+                                    <td style="padding: 10px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
+                                        {{ pedido.creado|date:"d/m/Y H:i" }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px 0; border-bottom: 1px solid #e5e5e5;">
+                                        <strong style="color: #666;">Total:</strong>
+                                    </td>
+                                    <td style="padding: 10px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
+                                        <strong style="color: #22c55e; font-size: 20px;">S/{{ pedido.total }}</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Datos del Cliente -->
+                    <tr>
+                        <td style="padding: 0 30px 20px;">
+                            <h3 style="color: #000; margin: 0 0 15px; font-size: 16px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+                                👤 Datos del Cliente
+                            </h3>
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding: 5px 0; color: #666;">Nombre:</td>
+                                    <td style="padding: 5px 0; text-align: right;"><strong>{{ pedido.nombre }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0; color: #666;">Email:</td>
+                                    <td style="padding: 5px 0; text-align: right;">
+                                        <a href="mailto:{{ pedido.email }}" style="color: #2563eb;">{{ pedido.email }}</a>
+                                    </td>
+                                </tr>
+                                {% if pedido.telefono %}
+                                <tr>
+                                    <td style="padding: 5px 0; color: #666;">Teléfono:</td>
+                                    <td style="padding: 5px 0; text-align: right;">
+                                        <a href="tel:{{ pedido.telefono }}" style="color: #2563eb;">{{ pedido.telefono }}</a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Dirección de Envío -->
+                    <tr>
+                        <td style="padding: 0 30px 20px;">
+                            <h3 style="color: #000; margin: 0 0 15px; font-size: 16px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+                                📍 Dirección de Envío
+                            </h3>
+                            <p style="margin: 0; color: #333; line-height: 1.6;">
+                                {{ pedido.direccion }}<br>
+                                {{ pedido.ciudad }}{% if pedido.codigo_postal %}, CP: {{ pedido.codigo_postal }}{% endif %}
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Productos -->
+                    <tr>
+                        <td style="padding: 0 30px 20px;">
+                            <h3 style="color: #000; margin: 0 0 15px; font-size: 16px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+                                📦 Productos ({{ pedido.cantidad_items }})
+                            </h3>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                {% for item in items %}
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+                                        <strong style="color: #000;">{{ item.producto_nombre }}</strong>
+                                        {% if item.presentacion_nombre %}
+                                        <br><span style="color: #666; font-size: 13px;">{{ item.presentacion_nombre }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: center; color: #666;">
+                                        x{{ item.cantidad }}
+                                    </td>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
+                                        <strong>S/{{ item.subtotal }}</strong>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td colspan="2" style="padding: 15px 0; text-align: right;">
+                                        <strong style="font-size: 18px;">TOTAL:</strong>
+                                    </td>
+                                    <td style="padding: 15px 0; text-align: right;">
+                                        <strong style="font-size: 20px; color: #22c55e;">S/{{ pedido.total }}</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    {% if pedido.notas %}
+                    <!-- Notas -->
+                    <tr>
+                        <td style="padding: 0 30px 20px;">
+                            <h3 style="color: #000; margin: 0 0 15px; font-size: 16px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+                                📝 Notas del Cliente
+                            </h3>
+                            <p style="margin: 0; color: #333; background-color: #f9f9f9; padding: 15px; border-radius: 4px; font-style: italic;">
+                                "{{ pedido.notas }}"
+                            </p>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    
+                    <!-- Acciones -->
+                    <tr>
+                        <td style="padding: 20px 30px 30px;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <a href="{{ site_url }}/admin/pedidos/pedido/{{ pedido.id }}/change/" 
+                                           style="display: inline-block; background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                                            Ver en Admin →
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f9f9f9; padding: 20px 30px; text-align: center; border-top: 1px solid #e5e5e5;">
+                            <p style="margin: 0; color: #666; font-size: 13px;">
+                                Este es un correo automático de {{ site_name }}.<br>
+                                Generado el {{ pedido.creado|date:"d/m/Y" }} a las {{ pedido.creado|date:"H:i" }}
+                            </p>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block title %}Pedido Confirmado{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        border-radius: 12px;
+    }
+    .card-header {
+        background: var(--color-dark, #0a0a0a);
+        color: white;
+        font-weight: 600;
+        border-radius: 12px 12px 0 0 !important;
+        border: none;
+    }
+    .card.border-warning {
+        border: 2px solid var(--color-warning, #f59e0b) !important;
+    }
+    .card.border-warning .card-header {
+        background: var(--color-warning, #f59e0b);
+        border-radius: 10px 10px 0 0 !important;
+    }
+    .btn-primary {
+        background: var(--color-dark, #0a0a0a);
+        border: none;
+    }
+    .btn-primary:hover {
+        background: var(--color-gray-900, #1f1f1f);
+        transform: translateY(-1px);
+    }
+    .btn-outline-primary {
+        color: var(--color-dark, #0a0a0a);
+        border-color: var(--color-dark, #0a0a0a);
+    }
+    .btn-outline-primary:hover {
+        background: var(--color-dark, #0a0a0a);
+        border-color: var(--color-dark, #0a0a0a);
+        color: white;
+    }
+    .section-title {
+        font-weight: 700;
+        color: var(--color-dark, #0a0a0a);
+    }
+    .table thead {
+        background: var(--color-gray-100, #f9fafb);
+    }
+    .precio-item {
+        color: var(--color-success, #16a34a);
+        font-weight: 600;
+    }
+    .badge-estado {
+        background: var(--color-warning, #f59e0b);
+        color: white;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Confirmación -->
+            <div class="text-center mb-5">
+                <div style="width: 100px; height: 100px; background: var(--color-success, #16a34a); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                    <i class="bi bi-check-lg" style="font-size: 3rem; color: #fff;"></i>
+                </div>
+                <h1 class="section-title">¡Gracias por tu pedido!</h1>
+                <p class="text-muted">
+                    Hemos recibido tu pedido. Te enviamos una confirmación a<br>
+                    <strong class="precio-item">{{ pedido.email }}</strong>
+                </p>
+            </div>
+            
+            <!-- Número de pedido -->
+            <div class="card mb-4">
+                <div class="card-body text-center py-4">
+                    <p class="text-muted mb-1">Número de Pedido</p>
+                    <h2 class="precio-item" style="font-weight: 700; letter-spacing: 1px;">{{ pedido.numero_pedido }}</h2>
+                    <p class="text-muted small mb-0">Guarda este número para dar seguimiento a tu pedido</p>
+                </div>
+            </div>
+            
+            <!-- DATOS DE PAGO - IMPORTANTE -->
+            <div class="card mb-4 border-warning">
+                <div class="card-header">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Pendiente de Pago</strong>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">Para confirmar tu pedido, realiza el pago mediante:</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="mb-2"><i class="bi bi-phone me-2 text-success"></i>Yape / Plin</h6>
+                                <p class="mb-0 fw-bold precio-item" style="font-size: 1.2rem;">916 557 975</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="mb-2"><i class="bi bi-bank me-2 text-primary"></i>BCP</h6>
+                                <p class="mb-1">Cuenta: <strong>XXX-XXXXXXX-X-XX</strong></p>
+                                <p class="mb-0 small text-muted">Titular: GardenAqua</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center justify-content-between p-3 rounded mt-3" style="background: var(--color-dark, #0a0a0a);">
+                        <span class="text-white">Total a pagar:</span>
+                        <span class="fw-bold text-white" style="font-size: 1.4rem;">S/ {{ pedido.total }}</span>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <p class="text-center mb-3">
+                        <strong>Una vez realizado el pago, envíanos el comprobante por WhatsApp:</strong>
+                    </p>
+                    
+                    <div class="text-center">
+                        <a href="{{ whatsapp_link }}" 
+                           class="btn btn-lg text-white d-inline-flex align-items-center"
+                           style="background-color: #25d366; padding: 12px 30px; border-radius: 30px;"
+                           target="_blank">
+                            <i class="bi bi-whatsapp me-2" style="font-size: 1.3rem;"></i>
+                            Enviar pedido por WhatsApp
+                        </a>
+                        <p class="text-muted small mt-2 mb-0">
+                            Se abrirá WhatsApp con los datos de tu pedido. Solo adjunta tu comprobante y envía.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Datos del cliente -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <i class="bi bi-person me-2"></i>Datos de Contacto
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-1"><strong>{{ pedido.nombre }}</strong></p>
+                            <p class="mb-1 text-muted">{{ pedido.email }}</p>
+                            {% if pedido.telefono %}
+                            <p class="mb-0 text-muted">{{ pedido.telefono }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dirección de envío -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <i class="bi bi-geo-alt me-2"></i>Dirección de Envío
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-1">{{ pedido.direccion }}</p>
+                            <p class="mb-0 text-muted">{{ pedido.ciudad }}{% if pedido.codigo_postal %}, {{ pedido.codigo_postal }}{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detalle del pedido -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-bag me-2"></i>Detalle del Pedido
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="padding-left: 1rem;">Producto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Precio</th>
+                                    <th class="text-end" style="padding-right: 1rem;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in pedido.items.all %}
+                                <tr>
+                                    <td style="padding-left: 1rem;">
+                                        <strong>{{ item.producto_nombre }}</strong>
+                                        <br><small class="text-muted">{{ item.presentacion_nombre }}</small>
+                                    </td>
+                                    <td class="text-center align-middle">{{ item.cantidad }}</td>
+                                    <td class="text-center align-middle precio-item">S/ {{ item.precio }}</td>
+                                    <td class="text-end align-middle fw-bold precio-item" style="padding-right: 1rem;">S/ {{ item.subtotal }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-light">
+                                    <td colspan="3" class="text-end" style="padding-left: 1rem;"><strong>Total</strong></td>
+                                    <td class="text-end precio-item" style="padding-right: 1rem;"><strong style="font-size: 1.1rem;">S/ {{ pedido.total }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estado del pedido -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <span class="badge badge-estado">
+                                {{ pedido.get_estado_display }}
+                            </span>
+                        </div>
+                        <div>
+                            <p class="mb-0 small text-muted">
+                                Te notificaremos por email cuando confirmemos tu pago y enviemos tu pedido.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if pedido.notas %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-chat-left-text me-2"></i>Notas del Pedido
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-muted">{{ pedido.notas }}</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Acciones -->
+            <div class="text-center">
+                <a href="{% url 'catalogo:inicio' %}" class="btn btn-primary me-2">
+                    <i class="bi bi-house me-1"></i>Volver a la tienda
+                </a>
+                <a href="{% url 'pedidos:consultar' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-search me-1"></i>Consultar otro pedido
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

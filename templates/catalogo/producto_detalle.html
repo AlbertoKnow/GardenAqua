@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ producto.nombre }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .miniatura-img {
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    .miniatura-img:hover, .miniatura-img.active {
+        border-color: var(--color-dark);
+    }
+    .badge-destacado {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: var(--color-dark);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 10;
+    }
+    .stock-disponible {
+        color: var(--color-success);
+        font-weight: 500;
+    }
+    .stock-agotado {
+        color: var(--color-error);
+        font-weight: 500;
+    }
+    .card {
+        border: 1px solid var(--color-gray-200);
+        border-radius: var(--radius);
+    }
+    .card-header {
+        background: var(--color-dark);
+        color: white;
+        font-weight: 500;
+        font-size: 0.9rem;
+        border-radius: var(--radius) var(--radius) 0 0 !important;
+        border: none;
+        padding: 0.85rem 1rem;
+    }
+    .table thead {
+        background: var(--color-gray-100);
+    }
+    .section-title {
+        font-weight: 600;
+        color: var(--color-dark);
+        font-size: 1.25rem;
+        letter-spacing: -0.5px;
+    }
+    .categoria-badge-detail {
+        background: var(--color-gray-100);
+        color: var(--color-dark);
+        padding: 0.4rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .categoria-badge-detail:hover {
+        background: var(--color-gray-200);
+        color: var(--color-dark);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'catalogo:inicio' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'catalogo:producto_lista' %}">Productos</a></li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'catalogo:categoria_detalle' producto.categoria.slug %}">
+                    {{ producto.categoria.nombre }}
+                </a>
+            </li>
+            <li class="breadcrumb-item active">{{ producto.nombre }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- Galería de Imágenes -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <!-- Imagen Principal -->
+                <div class="position-relative">
+                    {% if producto.destacado %}
+                    <span class="badge-destacado">Destacado</span>
+                    {% endif %}
+                    
+                    {% if producto.imagen_principal_url %}
+                    <img src="{{ producto.imagen_principal_url }}" 
+                         class="img-fluid" 
+                         alt="{{ producto.nombre }}"
+                         id="imagen-principal"
+                         style="width: 100%; height: 420px; object-fit: contain; background: var(--color-gray-100); border-radius: var(--radius) var(--radius) 0 0;">
+                    {% else %}
+                    <div class="img-placeholder" style="height: 420px; background: var(--color-gray-100); display: flex; align-items: center; justify-content: center; border-radius: var(--radius) var(--radius) 0 0;">
+                        <i class="bi bi-image" style="font-size: 3.5rem; color: var(--color-gray-400);"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Miniaturas de la Galería -->
+                {% if imagenes %}
+                <div class="card-body pt-3">
+                    <div class="row g-2">
+                        {% for img in imagenes %}
+                        <div class="col-3">
+                            <img src="{{ img.imagen.url }}" 
+                                 class="miniatura-img {% if img.es_principal %}active{% endif %}"
+                                 style="height: 70px; width: 100%; object-fit: cover; cursor: pointer; border-radius: var(--radius-sm);"
+                                 onclick="cambiarImagen(this, '{{ img.imagen.url }}')"
+                                 alt="{{ img.titulo|default:producto.nombre }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Información del Producto -->
+        <div class="col-lg-6">
+            <!-- Marca -->
+            {% if producto.marca %}
+            <p class="text-muted small text-uppercase mb-2" style="letter-spacing: 1px; font-size: 0.75rem;">
+                {{ producto.marca.nombre }}
+            </p>
+            {% endif %}
+            
+            <!-- Nombre -->
+            <h1 style="font-size: 1.75rem; font-weight: 600; letter-spacing: -0.5px; color: var(--color-dark);">{{ producto.nombre }}</h1>
+            
+            <!-- Modelo -->
+            {% if producto.modelo %}
+            <p class="text-muted small mb-4">
+                Modelo: {{ producto.modelo }}
+            </p>
+            {% endif %}
+            
+            <!-- Categoría -->
+            <p class="mb-4">
+                <a href="{% url 'catalogo:categoria_detalle' producto.categoria.slug %}" 
+                   class="categoria-badge-detail">
+                    {{ producto.categoria.nombre }}
+                </a>
+            </p>
+            
+            <!-- Presentaciones -->
+            {% if presentaciones %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-box me-2"></i>Presentaciones
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="padding-left: 1rem;">Presentación</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for presentacion in presentaciones %}
+                                <tr>
+                                    <td style="padding-left: 1rem;">
+                                        <strong>{{ presentacion.nombre }}</strong>
+                                        {% if presentacion.sku %}
+                                        <br><small class="text-muted">SKU: {{ presentacion.sku }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if presentacion.precio_oferta %}
+                                        <span class="fw-bold" style="color: var(--color-error);">S/ {{ presentacion.precio_oferta }}</span>
+                                        <br><small class="text-muted text-decoration-line-through">S/ {{ presentacion.precio }}</small>
+                                        {% else %}
+                                        <span class="fw-bold">S/ {{ presentacion.precio }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if presentacion.stock > 0 %}
+                                        <span class="stock-disponible">{{ presentacion.stock }} disponibles</span>
+                                        {% else %}
+                                        <span class="stock-agotado">Agotado</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if presentacion.stock > 0 %}
+                                        <form action="{% url 'carrito:agregar' presentacion.id %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="cantidad" value="1">
+                                            <button type="submit" class="btn btn-sm btn-primary" title="Agregar al carrito">
+                                                <i class="bi bi-bag-plus"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if presentacion.caracteristicas %}
+                                <tr>
+                                    <td colspan="4" class="bg-light" style="padding-left: 1rem;">
+                                        <small class="text-muted">{{ presentacion.caracteristicas }}</small>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                Este producto no tiene presentaciones disponibles.
+            </div>
+            {% endif %}
+            
+            <!-- Descripción -->
+            {% if producto.descripcion %}
+            <div class="card">
+                <div class="card-header">
+                    Descripción
+                </div>
+                <div class="card-body">
+                    <p class="mb-0" style="font-size: 0.9rem; color: var(--color-gray-600);">{{ producto.descripcion|linebreaks }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Productos Relacionados -->
+    {% if productos_relacionados %}
+    <section class="mt-5 pt-4" style="border-top: 1px solid var(--color-gray-200);">
+        <h3 class="section-title mb-4">Productos Relacionados</h3>
+        <div class="row g-4">
+            {% for producto in productos_relacionados %}
+            <div class="col-6 col-md-3">
+                {% include 'catalogo/includes/producto_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function cambiarImagen(elemento, url) {
+        document.getElementById('imagen-principal').src = url;
+        document.querySelectorAll('.miniatura-img').forEach(img => {
+            img.classList.remove('active');
+        });
+        elemento.classList.add('active');
+    }
+</script>
+{% endblock %}

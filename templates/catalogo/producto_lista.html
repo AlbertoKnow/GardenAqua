@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% if categoria_actual %}{{ categoria_actual.nombre }}{% else %}Productos{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .sidebar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--color-gray-200);
+        position: sticky;
+        top: 100px;
+    }
+    .sidebar-title {
+        font-weight: 600;
+        color: var(--color-dark);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--color-gray-200);
+    }
+    .categoria-link {
+        display: block;
+        padding: 0.6rem 0.75rem;
+        color: var(--color-gray-600);
+        text-decoration: none;
+        font-size: 0.9rem;
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
+        margin-bottom: 0.25rem;
+    }
+    .categoria-link:hover {
+        background: var(--color-gray-100);
+        color: var(--color-dark);
+    }
+    .categoria-link.active {
+        background: var(--color-dark);
+        color: white;
+        font-weight: 500;
+    }
+    .section-title {
+        font-weight: 600;
+        color: var(--color-dark);
+        font-size: 1.5rem;
+        letter-spacing: -0.5px;
+    }
+    .filter-badge {
+        padding: 0.4rem 0.8rem;
+        font-weight: 500;
+        font-size: 0.8rem;
+        background: var(--color-dark);
+        color: white;
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        display: inline-block;
+    }
+    .filter-badge:hover {
+        background: var(--color-gray-700);
+        color: white;
+    }
+    .filter-badge.secondary {
+        background: var(--color-gray-500);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'catalogo:inicio' %}">Inicio</a></li>
+            {% if categoria_actual %}
+            <li class="breadcrumb-item"><a href="{% url 'catalogo:producto_lista' %}">Productos</a></li>
+            <li class="breadcrumb-item active">{{ categoria_actual.nombre }}</li>
+            {% else %}
+            <li class="breadcrumb-item active">Productos</li>
+            {% endif %}
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- Sidebar de Filtros -->
+        <div class="col-lg-3 mb-4">
+            <div class="sidebar">
+                <!-- Categorías -->
+                <p class="sidebar-title"><i class="bi bi-grid me-2"></i>Categorías</p>
+                <ul class="list-unstyled mb-4">
+                    <li>
+                        <a href="{% url 'catalogo:producto_lista' %}{% if marca_actual %}?marca={{ marca_actual.slug }}{% endif %}" 
+                           class="categoria-link {% if not categoria_actual %}active{% endif %}">
+                            Todas
+                        </a>
+                    </li>
+                    {% for categoria in categorias %}
+                    <li>
+                        <a href="{% url 'catalogo:categoria_detalle' categoria.slug %}{% if marca_actual %}?marca={{ marca_actual.slug }}{% endif %}" 
+                           class="categoria-link {% if categoria_actual.slug == categoria.slug %}active{% endif %}">
+                            {{ categoria.nombre }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                
+                <!-- Marcas -->
+                {% if marcas %}
+                <p class="sidebar-title"><i class="bi bi-tag me-2"></i>Marcas</p>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{% if categoria_actual %}{% url 'catalogo:categoria_detalle' categoria_actual.slug %}{% else %}{% url 'catalogo:producto_lista' %}{% endif %}" 
+                           class="categoria-link {% if not marca_actual %}active{% endif %}">
+                            Todas
+                        </a>
+                    </li>
+                    {% for marca in marcas %}
+                    <li>
+                        <a href="{% if categoria_actual %}{% url 'catalogo:categoria_detalle' categoria_actual.slug %}{% else %}{% url 'catalogo:producto_lista' %}{% endif %}?marca={{ marca.slug }}" 
+                           class="categoria-link {% if marca_actual.slug == marca.slug %}active{% endif %}">
+                            {{ marca.nombre }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Listado de Productos -->
+        <div class="col-lg-9">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="section-title mb-1">
+                        {% if categoria_actual %}
+                        {{ categoria_actual.nombre }}
+                        {% else %}
+                        Todos los Productos
+                        {% endif %}
+                    </h1>
+                    <p class="text-muted small mb-0">
+                        {{ page_obj.paginator.count }} producto{{ page_obj.paginator.count|pluralize:"s" }}
+                        {% if marca_actual %} · {{ marca_actual.nombre }}{% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Filtros activos -->
+            {% if categoria_actual or marca_actual %}
+            <div class="mb-4">
+                {% if categoria_actual %}
+                <a href="{% url 'catalogo:producto_lista' %}{% if marca_actual %}?marca={{ marca_actual.slug }}{% endif %}" 
+                   class="filter-badge me-2">
+                    {{ categoria_actual.nombre }} ✕
+                </a>
+                {% endif %}
+                {% if marca_actual %}
+                <a href="{% if categoria_actual %}{% url 'catalogo:categoria_detalle' categoria_actual.slug %}{% else %}{% url 'catalogo:producto_lista' %}{% endif %}" 
+                   class="filter-badge secondary">
+                    {{ marca_actual.nombre }} ✕
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Grid de Productos -->
+            {% if productos %}
+            <div class="row g-4">
+                {% for producto in productos %}
+                <div class="col-6 col-md-4">
+                    {% include 'catalogo/includes/producto_card.html' %}
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Paginación -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Navegación de páginas" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if marca_actual %}&marca={{ marca_actual.slug }}{% endif %}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if marca_actual %}&marca={{ marca_actual.slug }}{% endif %}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if marca_actual %}&marca={{ marca_actual.slug }}{% endif %}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            
+            {% else %}
+            <!-- Sin productos -->
+            <div class="text-center py-5">
+                <div style="width: 70px; height: 70px; margin: 0 auto 1.5rem; background: var(--color-gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-search" style="font-size: 1.75rem; color: var(--color-gray-500);"></i>
+                </div>
+                <h3 style="font-weight: 600; color: var(--color-dark);">Sin resultados</h3>
+                <p class="text-muted">
+                    {% if categoria_actual %}
+                    No hay productos en "{{ categoria_actual.nombre }}"
+                    {% if marca_actual %} de {{ marca_actual.nombre }}{% endif %}.
+                    {% else %}
+                    No hay productos disponibles.
+                    {% endif %}
+                </p>
+                <a href="{% url 'catalogo:producto_lista' %}" class="btn btn-primary mt-3">
+                    Ver todos los productos
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualización de Pedido</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .content {
+            padding: 30px;
+        }
+        .status-box {
+            background-color: #f5f5f5;
+            padding: 25px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .status-box p {
+            margin: 0 0 10px 0;
+            color: #737373;
+            font-size: 14px;
+        }
+        .status-box .status {
+            display: inline-block;
+            background-color: #000;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .order-info {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .order-info p {
+            margin: 5px 0;
+            color: #737373;
+        }
+        .order-info strong {
+            color: #1a1a1a;
+            font-size: 18px;
+        }
+        .status-timeline {
+            margin: 30px 0;
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #e5e5e5;
+            margin-right: 15px;
+        }
+        .timeline-dot.active {
+            background-color: #000;
+        }
+        .timeline-dot.completed {
+            background-color: #000;
+        }
+        .timeline-text {
+            color: #a3a3a3;
+        }
+        .timeline-text.active {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        .button {
+            display: inline-block;
+            background-color: #000000;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            padding: 25px 30px;
+            text-align: center;
+            color: #737373;
+            font-size: 13px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>{{ site_name }}</h1>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <h2 style="text-align: center; margin-bottom: 10px;">Tu pedido ha sido actualizado</h2>
+            
+            <!-- Información del pedido -->
+            <div class="order-info">
+                <p>Pedido</p>
+                <strong>{{ pedido.numero_pedido }}</strong>
+            </div>
+            
+            <!-- Nuevo estado -->
+            <div class="status-box">
+                <p>Estado actual</p>
+                <span class="status">{{ pedido.get_estado_display }}</span>
+            </div>
+            
+            <!-- Timeline de estados -->
+            <div class="status-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot {% if pedido.estado in 'pendiente,confirmado,en_proceso,enviado,entregado' %}completed{% endif %}"></div>
+                    <span class="timeline-text {% if pedido.estado == 'pendiente' %}active{% endif %}">Pendiente</span>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot {% if pedido.estado in 'confirmado,en_proceso,enviado,entregado' %}completed{% endif %}"></div>
+                    <span class="timeline-text {% if pedido.estado == 'confirmado' %}active{% endif %}">Confirmado</span>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot {% if pedido.estado in 'en_proceso,enviado,entregado' %}completed{% endif %}"></div>
+                    <span class="timeline-text {% if pedido.estado == 'en_proceso' %}active{% endif %}">En Proceso</span>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot {% if pedido.estado in 'enviado,entregado' %}completed{% endif %}"></div>
+                    <span class="timeline-text {% if pedido.estado == 'enviado' %}active{% endif %}">Enviado</span>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot {% if pedido.estado == 'entregado' %}completed{% endif %}"></div>
+                    <span class="timeline-text {% if pedido.estado == 'entregado' %}active{% endif %}">Entregado</span>
+                </div>
+            </div>
+            
+            {% if pedido.estado == 'enviado' %}
+            <p style="text-align: center; background-color: #f5f5f5; padding: 15px; border-radius: 8px;">
+                🚚 ¡Tu pedido está en camino! Pronto llegará a tu dirección.
+            </p>
+            {% elif pedido.estado == 'entregado' %}
+            <p style="text-align: center; background-color: #f5f5f5; padding: 15px; border-radius: 8px;">
+                ✅ ¡Tu pedido ha sido entregado! Gracias por tu compra.
+            </p>
+            {% elif pedido.estado == 'cancelado' %}
+            <p style="text-align: center; background-color: #f5f5f5; padding: 15px; border-radius: 8px;">
+                Tu pedido ha sido cancelado. Si tienes preguntas, contáctanos.
+            </p>
+            {% endif %}
+            
+            <!-- Botón de seguimiento -->
+            <div style="text-align: center; margin-top: 25px;">
+                <a href="{{ site_url }}{% url 'pedidos:consultar' %}" class="button">
+                    Ver detalles del pedido
+                </a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>{{ site_name }}</strong></p>
+            <p>Tu tienda especializada en acuarios y productos para peces</p>
+            <p style="margin-top: 15px;">
+                ¿Tienes preguntas? Contáctanos a info@gardenaqua.com
+            </p>
+        </div>
+    </div>
+</body>
+</html>

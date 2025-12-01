@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bienvenido{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content">
+                <span class="badge mb-3" style="background: var(--color-dark); color: white; font-size: 0.7rem; padding: 6px 14px; letter-spacing: 1px; text-transform: uppercase;">
+                    Tienda Online
+                </span>
+                <h1>Tu acuario perfecto comienza aquí</h1>
+                <p>Productos premium para acuarios, peces y plantas acuáticas. Envíos a todo el Perú con asesoría especializada.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{% url 'catalogo:producto_lista' %}" class="btn btn-primary btn-lg">
+                        Ver Tienda
+                    </a>
+                    <a href="https://wa.me/51916557975" target="_blank" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-whatsapp me-2"></i>Contáctanos
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-center">
+                <img src="https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=500" 
+                     alt="Acuario" 
+                     class="img-fluid" 
+                     style="max-height: 380px; object-fit: cover; border-radius: var(--radius);">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categorías Destacadas -->
+{% if categorias %}
+<section class="py-5">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Categorías</h2>
+                <p class="section-subtitle">Explora nuestro catálogo</p>
+            </div>
+            <a href="{% url 'catalogo:producto_lista' %}" class="section-link">
+                Ver todo <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            {% for categoria in categorias|slice:":10" %}
+            <div class="col-4 col-sm-3 col-md-2">
+                <a href="{% url 'catalogo:categoria_detalle' categoria.slug %}" class="categoria-circle">
+                    <div class="img-wrapper">
+                        {% if categoria.imagen %}
+                        <img src="{{ categoria.imagen.url }}" alt="{{ categoria.nombre }}">
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-center h-100" style="background: var(--color-gray-100);">
+                            <i class="bi bi-box-seam" style="font-size: 1.5rem; color: var(--color-gray-500);"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <span>{{ categoria.nombre }}</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Productos Destacados -->
+{% if productos_destacados %}
+<section class="py-5 bg-primary-50">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Destacados</h2>
+                <p class="section-subtitle">Selección de nuestros mejores productos</p>
+            </div>
+            <a href="{% url 'catalogo:producto_lista' %}" class="section-link">
+                Ver todos <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="row g-4">
+            {% for producto in productos_destacados|slice:":8" %}
+            <div class="col-6 col-md-4 col-lg-3">
+                {% include 'catalogo/includes/producto_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Banner Promocional -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center" style="background: var(--color-dark); border-radius: var(--radius-lg); overflow: hidden;">
+            <div class="col-lg-6 p-5 text-white">
+                <span class="badge bg-white text-dark mb-3" style="font-size: 0.7rem; letter-spacing: 1px;">CÓMO COMPRAR</span>
+                <h2 class="fw-bold mb-4" style="font-size: 1.75rem;">Recibe tus productos en casa</h2>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">
+                            1
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-semibold">Elige tus productos</h6>
+                            <small style="opacity: 0.7;">Navega por nuestra tienda y agrega al carrito</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">
+                            2
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-semibold">Confirma tu pedido</h6>
+                            <small style="opacity: 0.7;">Ingresa tus datos y dirección de envío</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">
+                            3
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-semibold">Recibe en casa</h6>
+                            <small style="opacity: 0.7;">Enviamos a todo el Perú por Shalom y otros</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block p-4">
+                <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500" 
+                     alt="Envíos" 
+                     class="img-fluid" 
+                     style="max-height: 300px; width: 100%; object-fit: cover; border-radius: var(--radius);">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Productos Recientes -->
+{% if productos_recientes %}
+<section class="py-5">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Novedades</h2>
+                <p class="section-subtitle">Últimos productos agregados</p>
+            </div>
+            <a href="{% url 'catalogo:producto_lista' %}" class="section-link">
+                Ver todos <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="row g-4">
+            {% for producto in productos_recientes|slice:":8" %}
+            <div class="col-6 col-md-4 col-lg-3">
+                {% include 'catalogo/includes/producto_card.html' with es_nuevo=True %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Beneficios -->
+<section class="beneficios-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-lg-3">
+                <div class="beneficio-item">
+                    <div class="beneficio-icon">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <h6>Envíos nacionales</h6>
+                    <p>A todo el Perú</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="beneficio-item">
+                    <div class="beneficio-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h6>Compra segura</h6>
+                    <p>Pedido protegido</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="beneficio-item">
+                    <div class="beneficio-icon">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h6>Asesoría experta</h6>
+                    <p>Soporte personalizado</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="beneficio-item">
+                    <div class="beneficio-icon">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <h6>Calidad garantizada</h6>
+                    <p>Productos certificados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mensaje si no hay productos -->
+{% if not productos_destacados and not productos_recientes %}
+<section class="py-5">
+    <div class="container">
+        <div class="text-center py-5">
+            <div style="width: 80px; height: 80px; background: var(--color-gray-100); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i class="bi bi-box-seam" style="font-size: 2rem; color: var(--color-gray-500);"></i>
+            </div>
+            <h3 class="fw-bold mb-2">Próximamente</h3>
+            <p class="text-muted mb-4">Estamos preparando nuestro catálogo.</p>
+            <a href="/admin/" class="btn btn-primary">
+                Ir al administrador
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

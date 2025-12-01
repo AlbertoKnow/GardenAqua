@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bienvenido{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1>GardenAqua</h1>
+                <p>Tu tienda especializada en acuarios y productos para peces</p>
+                <a href="{% url 'catalogo:producto_lista' %}" class="btn btn-primary btn-lg mt-2">
+                    Ver Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Categorías -->
+    {% if categorias %}
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Categorías</h2>
+        </div>
+        <div class="row g-3">
+            {% for categoria in categorias %}
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="{% url 'catalogo:categoria_detalle' categoria.slug %}" class="categoria-card card h-100">
+                    {% if categoria.imagen %}
+                    <img src="{{ categoria.imagen.url }}" class="card-img-top" alt="{{ categoria.nombre }}">
+                    {% else %}
+                    <div class="img-placeholder" style="height: 120px;">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h6>{{ categoria.nombre }}</h6>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Productos Destacados -->
+    {% if productos_destacados %}
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Destacados</h2>
+            <a href="{% url 'catalogo:producto_lista' %}" class="btn btn-outline-primary btn-sm">
+                Ver todos
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for producto in productos_destacados %}
+            <div class="col-6 col-md-4 col-lg-3">
+                {% include 'catalogo/includes/producto_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Productos Recientes -->
+    {% if productos_recientes %}
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Recientes</h2>
+            <a href="{% url 'catalogo:producto_lista' %}" class="btn btn-outline-primary btn-sm">
+                Ver todos
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for producto in productos_recientes %}
+            <div class="col-6 col-md-4 col-lg-3">
+                {% include 'catalogo/includes/producto_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Mensaje si no hay productos -->
+    {% if not productos_destacados and not productos_recientes %}
+    <div class="text-center py-5">
+        <i class="bi bi-box-seam" style="font-size: 3rem; color: #a3a3a3;"></i>
+        <h3 class="mt-4" style="font-weight: 600;">Próximamente</h3>
+        <p class="text-muted">Estamos preparando nuestro catálogo de productos.</p>
+        <a href="/admin/" class="btn btn-primary mt-3">
+            Ir al panel de administración
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
