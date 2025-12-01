@@ -9,6 +9,8 @@ from django.db import models
 from django.urls import reverse
 from slugify import slugify
 
+from .utils import procesar_imagen, necesita_conversion
+
 
 class Categoria(models.Model):
     """
@@ -83,13 +85,20 @@ class Categoria(models.Model):
     
     def save(self, *args, **kwargs):
         """
-        Sobrescribe el método save para generar el slug automáticamente.
+        Sobrescribe el método save para generar el slug automáticamente
+        y convertir la imagen a WebP.
         
         Si no se proporciona un slug, se genera a partir del nombre
         usando la librería python-slugify.
         """
         if not self.slug:
             self.slug = slugify(self.nombre)
+        
+        # Convertir imagen a WebP si es necesario
+        if self.imagen and necesita_conversion(self.imagen):
+            nuevo_contenido, nuevo_nombre = procesar_imagen(self.imagen)
+            self.imagen.save(nuevo_nombre, nuevo_contenido, save=False)
+        
         super().save(*args, **kwargs)
     
     def get_absolute_url(self):
@@ -152,9 +161,17 @@ class Marca(models.Model):
         return self.nombre
     
     def save(self, *args, **kwargs):
-        """Genera el slug automáticamente a partir del nombre."""
+        """
+        Genera el slug automáticamente y convierte el logo a WebP.
+        """
         if not self.slug:
             self.slug = slugify(self.nombre)
+        
+        # Convertir logo a WebP si es necesario
+        if self.logo and necesita_conversion(self.logo):
+            nuevo_contenido, nuevo_nombre = procesar_imagen(self.logo)
+            self.logo.save(nuevo_nombre, nuevo_contenido, save=False)
+        
         super().save(*args, **kwargs)
 
 
@@ -533,10 +550,16 @@ class ImagenProducto(models.Model):
     
     def save(self, *args, **kwargs):
         """
-        Sobrescribe save para asegurar que solo haya una imagen principal.
+        Sobrescribe save para asegurar que solo haya una imagen principal
+        y convertir la imagen a WebP.
         
         Si esta imagen se marca como principal, desmarca las demás.
         """
+        # Convertir imagen a WebP si es necesario
+        if self.imagen and necesita_conversion(self.imagen):
+            nuevo_contenido, nuevo_nombre = procesar_imagen(self.imagen)
+            self.imagen.save(nuevo_nombre, nuevo_contenido, save=False)
+        
         if self.es_principal:
             # Desmarcar otras imágenes principales del mismo producto
             ImagenProducto.objects.filter(
