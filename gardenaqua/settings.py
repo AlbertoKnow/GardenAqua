@@ -219,7 +219,9 @@ if not DEBUG:
     # WhiteNoise para archivos estáticos comprimidos
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     
-    # Hosts de confianza para CSRF
+    # Hosts de confianza para CSRF (http y https)
     CSRF_TRUSTED_ORIGINS = [
+        f"http://{host}" for host in ALLOWED_HOSTS
+    ] + [
         f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']
     ]
