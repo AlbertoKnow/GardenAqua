@@ -46,8 +46,8 @@
                 <h2 class="section-title">Categorías</h2>
                 <p class="section-subtitle">Explora nuestro catálogo</p>
             </div>
-            <a href="{% url 'catalogo:producto_lista' %}" class="section-link">
-                Ver todo <i class="bi bi-arrow-right"></i>
+            <a href="{% url 'catalogo:producto_lista' %}" class="section-link" aria-label="Ver todas las categorías">
+                Ver todo <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
         
@@ -82,8 +82,8 @@
                 <h2 class="section-title">Destacados</h2>
                 <p class="section-subtitle">Selección de nuestros mejores productos</p>
             </div>
-            <a href="{% url 'catalogo:producto_lista' %}" class="section-link">
-                Ver todos <i class="bi bi-arrow-right"></i>
+            <a href="{% url 'catalogo:producto_lista' %}" class="section-link" aria-label="Ver todos los productos destacados">
+                Ver todos <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
         
@@ -158,8 +158,8 @@
                 <h2 class="section-title">Novedades</h2>
                 <p class="section-subtitle">Últimos productos agregados</p>
             </div>
-            <a href="{% url 'catalogo:producto_lista' %}" class="section-link">
-                Ver todos <i class="bi bi-arrow-right"></i>
+            <a href="{% url 'catalogo:producto_lista' %}" class="section-link" aria-label="Ver todas las novedades">
+                Ver todos <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
         
@@ -175,42 +175,42 @@
 {% endif %}
 
 <!-- Beneficios -->
-<section class="beneficios-section">
+<section class="beneficios-section" aria-label="Beneficios de comprar en GardenAqua">
     <div class="container">
         <div class="row">
             <div class="col-6 col-lg-3">
                 <div class="beneficio-item">
-                    <div class="beneficio-icon">
+                    <div class="beneficio-icon" aria-hidden="true">
                         <i class="bi bi-truck"></i>
                     </div>
-                    <h6>Envíos nacionales</h6>
+                    <h3 class="h6">Envíos nacionales</h3>
                     <p>A todo el Perú</p>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="beneficio-item">
-                    <div class="beneficio-icon">
+                    <div class="beneficio-icon" aria-hidden="true">
                         <i class="bi bi-shield-check"></i>
                     </div>
-                    <h6>Compra segura</h6>
+                    <h3 class="h6">Compra segura</h3>
                     <p>Pedido protegido</p>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="beneficio-item">
-                    <div class="beneficio-icon">
+                    <div class="beneficio-icon" aria-hidden="true">
                         <i class="bi bi-headset"></i>
                     </div>
-                    <h6>Asesoría experta</h6>
+                    <h3 class="h6">Asesoría experta</h3>
                     <p>Soporte personalizado</p>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="beneficio-item">
-                    <div class="beneficio-icon">
+                    <div class="beneficio-icon" aria-hidden="true">
                         <i class="bi bi-award"></i>
                     </div>
-                    <h6>Calidad garantizada</h6>
+                    <h3 class="h6">Calidad garantizada</h3>
                     <p>Productos certificados</p>
                 </div>
             </div>

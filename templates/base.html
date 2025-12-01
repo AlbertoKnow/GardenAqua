@@ -990,11 +990,11 @@
 </head>
 <body>
     <!-- Barra Superior -->
-    <div class="top-bar">
+    <div class="top-bar" role="banner">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start">
-                    <span><i class="bi bi-truck"></i> Envíos a todo el Perú</span>
+                    <span><i class="bi bi-truck" aria-hidden="true"></i> Envíos a todo el Perú</span>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <a href="https://wa.me/51916557975" target="_blank" rel="noopener noreferrer" class="me-3" aria-label="Llámanos al 916 557 975">
@@ -1009,11 +1009,11 @@
     </div>
     
     <!-- Navbar Principal -->
-    <nav class="navbar navbar-expand-lg navbar-main">
+    <nav class="navbar navbar-expand-lg navbar-main" aria-label="Navegación principal">
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand" href="{% url 'catalogo:inicio' %}">
-                <i class="bi bi-water"></i>
+                <i class="bi bi-water" aria-hidden="true"></i>
                 GardenAqua
             </a>
             
@@ -1106,7 +1106,7 @@
                 <!-- Sobre Nosotros -->
                 <div class="col-lg-4 col-md-6 mb-4">
                     <span class="footer-logo">
-                        <i class="bi bi-water me-2"></i>GardenAqua
+                        <i class="bi bi-water me-2" aria-hidden="true"></i>GardenAqua
                     </span>
                     <p>
                         Nos especializamos en productos para acuarios y peces. 
@@ -1122,7 +1122,7 @@
                 
                 <!-- Enlaces -->
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h5>Tienda</h5>
+                    <h2 class="h5">Tienda</h2>
                     <ul>
                         <li><a href="{% url 'catalogo:inicio' %}">Inicio</a></li>
                         <li><a href="{% url 'catalogo:producto_lista' %}">Productos</a></li>
@@ -1132,10 +1132,10 @@
                 
                 <!-- Ayuda -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Ayuda</h5>
+                    <h2 class="h5">Ayuda</h2>
                     <ul>
                         <li><a href="#">Preguntas frecuentes</a></li>
-                        <li><a href="#">Política de envíos</a></li>
+                        <li><a href="#" >Política de envíos</a></li>
                         <li><a href="#">Cambios y devoluciones</a></li>
                         <li><a href="#">Términos y condiciones</a></li>
                     </ul>
@@ -1143,10 +1143,10 @@
                 
                 <!-- Contacto -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>¿Necesitas ayuda?</h5>
+                    <h2 class="h5">¿Necesitas ayuda?</h2>
                     <ul>
-                        <li><i class="bi bi-whatsapp me-2"></i> 916 557 975</li>
-                        <li><i class="bi bi-envelope me-2"></i> ventas@gardenaqua.pe</li>
+                        <li><i class="bi bi-whatsapp me-2" aria-hidden="true"></i> 916 557 975</li>
+                        <li><i class="bi bi-envelope me-2" aria-hidden="true"></i> ventas@gardenaqua.pe</li>
                         <li class="mt-2">
                             <small>Atención: Lun-Vie 9am-8pm<br>Sáb 9am-1pm</small>
                         </li>
