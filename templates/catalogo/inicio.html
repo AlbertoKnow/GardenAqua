@@ -18,15 +18,19 @@
                     <a href="{% url 'catalogo:producto_lista' %}" class="btn btn-primary btn-lg">
                         Ver Tienda
                     </a>
-                    <a href="https://wa.me/51916557975" target="_blank" class="btn btn-outline-primary btn-lg">
-                        <i class="bi bi-whatsapp me-2"></i>Contáctanos
+                    <a href="https://wa.me/51916557975" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-lg" aria-label="Contáctanos por WhatsApp">
+                        <i class="bi bi-whatsapp me-2" aria-hidden="true"></i>Contáctanos
                     </a>
                 </div>
             </div>
             <div class="col-lg-5 d-none d-lg-block text-center">
                 <img src="https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=500" 
-                     alt="Acuario" 
+                     alt="Acuario decorativo con peces tropicales" 
                      class="img-fluid" 
+                     loading="eager"
+                     decoding="async"
+                     width="500"
+                     height="380"
                      style="max-height: 380px; object-fit: cover; border-radius: var(--radius);">
             </div>
         </div>
@@ -50,13 +54,13 @@
         <div class="row g-4 justify-content-center">
             {% for categoria in categorias|slice:":10" %}
             <div class="col-4 col-sm-3 col-md-2">
-                <a href="{% url 'catalogo:categoria_detalle' categoria.slug %}" class="categoria-circle">
+                <a href="{% url 'catalogo:categoria_detalle' categoria.slug %}" class="categoria-circle" aria-label="Ver productos de {{ categoria.nombre }}">
                     <div class="img-wrapper">
                         {% if categoria.imagen %}
-                        <img src="{{ categoria.imagen.url }}" alt="{{ categoria.nombre }}">
+                        <img src="{{ categoria.imagen.url }}" alt="{{ categoria.nombre }}" loading="lazy" decoding="async">
                         {% else %}
-                        <div class="d-flex align-items-center justify-content-center h-100" style="background: var(--color-gray-100);">
-                            <i class="bi bi-box-seam" style="font-size: 1.5rem; color: var(--color-gray-500);"></i>
+                        <div class="d-flex align-items-center justify-content-center h-100" style="background: var(--color-gray-100);" role="img" aria-label="Sin imagen">
+                            <i class="bi bi-box-seam" style="font-size: 1.5rem; color: var(--color-gray-500);" aria-hidden="true"></i>
                         </div>
                         {% endif %}
                     </div>
@@ -133,8 +137,12 @@
             </div>
             <div class="col-lg-6 d-none d-lg-block p-4">
                 <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500" 
-                     alt="Envíos" 
+                     alt="Servicio de envíos a todo el Perú" 
                      class="img-fluid" 
+                     loading="lazy"
+                     decoding="async"
+                     width="500"
+                     height="300"
                      style="max-height: 300px; width: 100%; object-fit: cover; border-radius: var(--radius);">
             </div>
         </div>

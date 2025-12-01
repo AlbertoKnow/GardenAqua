@@ -11,18 +11,22 @@
         
         <!-- Quick Actions -->
         <div class="quick-actions">
-            <a href="{% url 'catalogo:producto_detalle' producto.slug %}" class="quick-action-btn" title="Ver detalle">
-                <i class="bi bi-eye"></i>
+            <a href="{% url 'catalogo:producto_detalle' producto.slug %}" class="quick-action-btn" title="Ver detalle" aria-label="Ver detalle de {{ producto.nombre }}">
+                <i class="bi bi-eye" aria-hidden="true"></i>
             </a>
         </div>
         
         <!-- Imagen -->
-        <a href="{% url 'catalogo:producto_detalle' producto.slug %}">
+        <a href="{% url 'catalogo:producto_detalle' producto.slug %}" aria-label="Ver {{ producto.nombre }}">
             {% if producto.imagen_principal_url %}
-            <img src="{{ producto.imagen_principal_url }}" class="card-img-top" alt="{{ producto.nombre }}">
+            <img src="{{ producto.imagen_principal_url }}" 
+                 class="card-img-top" 
+                 alt="{{ producto.nombre }}"
+                 loading="lazy"
+                 decoding="async">
             {% else %}
-            <div class="img-placeholder">
-                <i class="bi bi-image"></i>
+            <div class="img-placeholder" role="img" aria-label="Imagen no disponible">
+                <i class="bi bi-image" aria-hidden="true"></i>
             </div>
             {% endif %}
         </a>
@@ -62,14 +66,14 @@
                 {% csrf_token %}
                 <input type="hidden" name="cantidad" value="1">
                 <input type="hidden" name="override" value="False">
-                <button type="submit" class="btn-add-cart">
-                    <i class="bi bi-bag-plus"></i>
+                <button type="submit" class="btn-add-cart" aria-label="Agregar {{ producto.nombre }} al carrito">
+                    <i class="bi bi-bag-plus" aria-hidden="true"></i>
                     Agregar
                 </button>
             </form>
             {% else %}
-            <button class="btn-add-cart" disabled>
-                <i class="bi bi-x-circle"></i>
+            <button class="btn-add-cart" disabled aria-label="Producto agotado">
+                <i class="bi bi-x-circle" aria-hidden="true"></i>
                 Agotado
             </button>
             {% endif %}
