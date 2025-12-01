@@ -205,16 +205,17 @@ SITE_DESCRIPTION = 'Tu tienda especializada en acuarios y productos para peces'
 # Configuraciones adicionales para entorno de producción
 
 if not DEBUG:
-    # Seguridad HTTPS
+    # Seguridad HTTPS (configurables por variable de entorno)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True') == 'True'
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
+    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False') == 'True'
+    CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'False') == 'True'
     
-    # HSTS
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # HSTS (solo activar cuando tengas SSL)
+    if os.environ.get('ENABLE_HSTS', 'False') == 'True':
+        SECURE_HSTS_SECONDS = 31536000
+        SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+        SECURE_HSTS_PRELOAD = True
     
     # WhiteNoise para archivos estáticos comprimidos
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
