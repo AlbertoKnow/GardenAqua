@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Aplicaciones de terceros
+    'django_ckeditor_5',
     
     # Aplicaciones propias del proyecto
     'apps.catalogo',
@@ -197,6 +198,49 @@ WHATSAPP_NUMBER = os.environ.get('WHATSAPP_NUMBER', '51916557975')
 SITE_NAME = os.environ.get('SITE_NAME', 'GardenAqua')
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
 SITE_DESCRIPTION = 'Tu tienda especializada en acuarios y productos para peces'
+
+
+# =============================================================================
+# CONFIGURACIÓN DE CKEDITOR 5
+# =============================================================================
+
+CKEDITOR_5_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+CKEDITOR_5_UPLOAD_PATH = "ckeditor/"
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': [
+            'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'bulletedList', 'numberedList', '|',
+            'link', 'blockQuote', '|',
+            'insertTable', '|',
+            'undo', 'redo'
+        ],
+        'language': 'es',
+    },
+    'extends': {
+        'toolbar': [
+            'heading', '|',
+            'bold', 'italic', 'underline', 'strikethrough', '|',
+            'bulletedList', 'numberedList', '|',
+            'outdent', 'indent', '|',
+            'link', 'insertImage', 'blockQuote', 'insertTable', '|',
+            'undo', 'redo', '|',
+            'sourceEditing'
+        ],
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', 'toggleImageCaption', '|',
+                'imageStyle:inline', 'imageStyle:block', 'imageStyle:side'
+            ]
+        },
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells']
+        },
+        'language': 'es',
+    }
+}
 
 
 # =============================================================================

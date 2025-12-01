@@ -7,7 +7,9 @@ de productos de la tienda, incluyendo categorías y productos.
 
 from django.db import models
 from django.urls import reverse
+from django.core.validators import URLValidator, MinValueValidator, MaxValueValidator
 from slugify import slugify
+from django_ckeditor_5.fields import CKEditor5Field
 
 from .utils import procesar_imagen, necesita_conversion
 
@@ -189,7 +191,8 @@ class Producto(models.Model):
         nombre (str): Nombre del producto.
         modelo (str): Modelo o referencia del producto.
         slug (str): Identificador único para URL amigable.
-        descripcion (str): Descripción detallada del producto.
+        descripcion_corta (str): Descripción breve para listados.
+        descripcion (str): Descripción detallada del producto (HTML).
         activo (bool): Indica si el producto está activo para venta.
         destacado (bool): Indica si el producto está destacado.
         fecha_creacion (datetime): Fecha de creación del registro.
@@ -234,10 +237,17 @@ class Producto(models.Model):
         verbose_name='Slug',
         help_text='Identificador único para URL (se genera automáticamente)'
     )
-    descripcion = models.TextField(
+    descripcion_corta = models.TextField(
+        max_length=500,
         blank=True,
-        verbose_name='Descripción',
-        help_text='Descripción detallada del producto'
+        verbose_name='Descripción corta',
+        help_text='Descripción breve del producto (máx. 500 caracteres). Se muestra junto a la imagen principal.'
+    )
+    descripcion = CKEditor5Field(
+        blank=True,
+        verbose_name='Descripción detallada',
+        help_text='Descripción completa del producto con formato. Se muestra en la sección inferior.',
+        config_name='extends'
     )
     activo = models.BooleanField(
         default=True,
@@ -382,6 +392,30 @@ class Producto(models.Model):
         duplicada en la galería.
         """
         return self.imagenes.all()
+    
+    @property
+    def imagenes_galeria(self):
+        """
+        Retorna las imágenes que deben mostrarse en la galería principal.
+        """
+        return self.imagenes.filter(mostrar_en_galeria=True)
+    
+    @property
+    def imagenes_descripcion(self):
+        """
+        Retorna las imágenes que deben mostrarse en la descripción larga.
+        """
+        return self.imagenes.filter(mostrar_en_descripcion=True)
+    
+    @property
+    def tiene_videos(self):
+        """Indica si el producto tiene videos asociados."""
+        return self.videos.exists()
+    
+    @property
+    def tiene_especificaciones(self):
+        """Indica si el producto tiene especificaciones técnicas."""
+        return self.especificaciones.exists()
 
 
 class Presentacion(models.Model):
@@ -501,13 +535,15 @@ class ImagenProducto(models.Model):
     Modelo para imágenes de productos.
     
     Gestiona todas las imágenes de un producto en un solo lugar.
-    Una imagen puede marcarse como principal para mostrarla en listados.
+    Una imagen puede marcarse como principal y definir dónde se muestra.
     
     Atributos:
         producto (ForeignKey): Producto al que pertenece la imagen.
         imagen (ImageField): Archivo de imagen.
         titulo (str): Título descriptivo de la imagen.
         es_principal (bool): Indica si es la imagen principal del producto.
+        mostrar_en_galeria (bool): Si aparece en la galería superior.
+        mostrar_en_descripcion (bool): Si aparece en la descripción larga.
         orden (int): Orden de visualización en la galería.
     """
     
@@ -532,6 +568,16 @@ class ImagenProducto(models.Model):
         verbose_name='Imagen principal',
         help_text='Marcar como imagen principal del producto (se mostrará en listados)'
     )
+    mostrar_en_galeria = models.BooleanField(
+        default=True,
+        verbose_name='Mostrar en galería',
+        help_text='Mostrar esta imagen en la galería principal del producto'
+    )
+    mostrar_en_descripcion = models.BooleanField(
+        default=False,
+        verbose_name='Mostrar en descripción',
+        help_text='Mostrar esta imagen en la sección de descripción detallada'
+    )
     orden = models.PositiveIntegerField(
         default=0,
         verbose_name='Orden',
@@ -545,8 +591,14 @@ class ImagenProducto(models.Model):
     
     def __str__(self):
         """Retorna una descripción de la imagen."""
-        principal = " (Principal)" if self.es_principal else ""
-        return f"Imagen de {self.producto.nombre}{principal}"
+        ubicacion = []
+        if self.mostrar_en_galeria:
+            ubicacion.append("Galería")
+        if self.mostrar_en_descripcion:
+            ubicacion.append("Descripción")
+        ubicacion_str = " + ".join(ubicacion) if ubicacion else "Sin ubicación"
+        principal = " ★" if self.es_principal else ""
+        return f"{self.producto.nombre} - {ubicacion_str}{principal}"
     
     def save(self, *args, **kwargs):
         """
@@ -568,3 +620,128 @@ class ImagenProducto(models.Model):
             ).exclude(pk=self.pk).update(es_principal=False)
         super().save(*args, **kwargs)
 
+
+class VideoProducto(models.Model):
+    """
+    Modelo para videos de productos.
+    
+    Permite asociar videos de YouTube a un producto para mostrar
+    demostraciones, tutoriales, reseñas, etc.
+    
+    Atributos:
+        producto (ForeignKey): Producto al que pertenece el video.
+        titulo (str): Título descriptivo del video.
+        url_youtube (str): URL del video de YouTube.
+        orden (int): Orden de visualización.
+    """
+    
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name='videos',
+        verbose_name='Producto'
+    )
+    titulo = models.CharField(
+        max_length=200,
+        verbose_name='Título',
+        help_text='Título descriptivo del video'
+    )
+    url_youtube = models.URLField(
+        verbose_name='URL de YouTube',
+        help_text='URL completa del video de YouTube (ej: https://www.youtube.com/watch?v=xxxxx)',
+        validators=[URLValidator()]
+    )
+    orden = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Orden',
+        help_text='Orden de visualización'
+    )
+    
+    class Meta:
+        verbose_name = 'Video de producto'
+        verbose_name_plural = 'Videos de productos'
+        ordering = ['orden']
+    
+    def __str__(self):
+        """Retorna el título del video."""
+        return f"{self.producto.nombre} - {self.titulo}"
+    
+    @property
+    def youtube_id(self):
+        """
+        Extrae el ID del video de YouTube desde la URL.
+        
+        Soporta formatos:
+        - https://www.youtube.com/watch?v=VIDEO_ID
+        - https://youtu.be/VIDEO_ID
+        - https://www.youtube.com/embed/VIDEO_ID
+        """
+        import re
+        patterns = [
+            r'(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)',
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, self.url_youtube)
+            if match:
+                return match.group(1)
+        return None
+    
+    @property
+    def embed_url(self):
+        """Retorna la URL de embed para el iframe."""
+        video_id = self.youtube_id
+        if video_id:
+            return f"https://www.youtube.com/embed/{video_id}"
+        return None
+
+
+class EspecificacionProducto(models.Model):
+    """
+    Modelo para especificaciones técnicas de productos.
+    
+    Permite definir características técnicas variables para cada producto.
+    Cada especificación tiene un nombre y un valor.
+    
+    Ejemplos:
+        - Potencia: 110 GPH
+        - Voltaje: 110V
+        - Dimensiones: 20x15x25 cm
+        - Material: Plástico ABS
+    
+    Atributos:
+        producto (ForeignKey): Producto al que pertenece la especificación.
+        nombre (str): Nombre de la especificación (ej: "Potencia").
+        valor (str): Valor de la especificación (ej: "110 GPH").
+        orden (int): Orden de visualización en la tabla.
+    """
+    
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name='especificaciones',
+        verbose_name='Producto'
+    )
+    nombre = models.CharField(
+        max_length=100,
+        verbose_name='Especificación',
+        help_text='Nombre de la especificación (ej: Potencia, Voltaje, Dimensiones)'
+    )
+    valor = models.CharField(
+        max_length=200,
+        verbose_name='Valor',
+        help_text='Valor de la especificación (ej: 110 GPH, 110V, 20x15x25 cm)'
+    )
+    orden = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Orden',
+        help_text='Orden de visualización en la tabla de especificaciones'
+    )
+    
+    class Meta:
+        verbose_name = 'Especificación técnica'
+        verbose_name_plural = 'Especificaciones técnicas'
+        ordering = ['orden', 'nombre']
+    
+    def __str__(self):
+        """Retorna nombre: valor."""
+        return f"{self.nombre}: {self.valor}"

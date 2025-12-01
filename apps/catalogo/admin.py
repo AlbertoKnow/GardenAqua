@@ -8,7 +8,10 @@ categorías, marcas, productos, presentaciones e imágenes de manera eficiente.
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Categoria, Marca, Producto, Presentacion, ImagenProducto
+from .models import (
+    Categoria, Marca, Producto, Presentacion, 
+    ImagenProducto, VideoProducto, EspecificacionProducto
+)
 
 
 class ImagenProductoInline(admin.TabularInline):
@@ -20,7 +23,7 @@ class ImagenProductoInline(admin.TabularInline):
     """
     model = ImagenProducto
     extra = 1
-    fields = ['imagen', 'titulo', 'es_principal', 'orden']
+    fields = ['imagen', 'titulo', 'es_principal', 'mostrar_en_galeria', 'mostrar_en_descripcion', 'orden']
     readonly_fields = ['mostrar_preview']
     
     def mostrar_preview(self, obj):
@@ -32,6 +35,32 @@ class ImagenProductoInline(admin.TabularInline):
             )
         return '-'
     mostrar_preview.short_description = 'Vista previa'
+
+
+class VideoProductoInline(admin.TabularInline):
+    """
+    Inline para gestionar los videos de un producto.
+    
+    Permite agregar videos de YouTube al producto.
+    """
+    model = VideoProducto
+    extra = 0
+    fields = ['titulo', 'url_youtube', 'orden']
+    verbose_name = 'Video'
+    verbose_name_plural = 'Videos'
+
+
+class EspecificacionProductoInline(admin.TabularInline):
+    """
+    Inline para gestionar las especificaciones técnicas de un producto.
+    
+    Permite agregar especificaciones con nombre y valor.
+    """
+    model = EspecificacionProducto
+    extra = 0
+    fields = ['nombre', 'valor', 'orden']
+    verbose_name = 'Especificación técnica'
+    verbose_name_plural = 'Especificaciones técnicas'
 
 
 class PresentacionInline(admin.TabularInline):
@@ -166,14 +195,19 @@ class ProductoAdmin(admin.ModelAdmin):
     ordering = ['-fecha_creacion']
     list_per_page = 25
     
-    inlines = [ImagenProductoInline, PresentacionInline]
+    inlines = [ImagenProductoInline, PresentacionInline, EspecificacionProductoInline, VideoProductoInline]
     
     fieldsets = (
         ('Información Principal', {
             'fields': ('categoria', 'marca', 'nombre', 'modelo', 'slug')
         }),
-        ('Descripción', {
-            'fields': ('descripcion',)
+        ('Descripción Corta', {
+            'fields': ('descripcion_corta',),
+            'description': 'Esta descripción se muestra junto a la imagen principal del producto.'
+        }),
+        ('Descripción Detallada', {
+            'fields': ('descripcion',),
+            'description': 'Esta descripción se muestra en la parte inferior del producto. Puedes agregar formato, imágenes y más.'
         }),
         ('Configuración', {
             'fields': ('activo', 'destacado')
@@ -287,10 +321,10 @@ class ImagenProductoAdmin(admin.ModelAdmin):
     Permite gestionar las imágenes de productos de forma independiente.
     """
     
-    list_display = ['producto', 'titulo', 'mostrar_imagen', 'es_principal', 'orden']
+    list_display = ['producto', 'titulo', 'mostrar_imagen', 'es_principal', 'mostrar_en_galeria', 'mostrar_en_descripcion', 'orden']
     list_display_links = ['producto', 'titulo']
-    list_editable = ['es_principal', 'orden']
-    list_filter = ['producto__categoria', 'es_principal']
+    list_editable = ['es_principal', 'mostrar_en_galeria', 'mostrar_en_descripcion', 'orden']
+    list_filter = ['producto__categoria', 'es_principal', 'mostrar_en_galeria', 'mostrar_en_descripcion']
     search_fields = ['producto__nombre', 'titulo']
     ordering = ['producto', '-es_principal', 'orden']
     
@@ -303,6 +337,38 @@ class ImagenProductoAdmin(admin.ModelAdmin):
             )
         return '-'
     mostrar_imagen.short_description = 'Imagen'
+
+
+@admin.register(VideoProducto)
+class VideoProductoAdmin(admin.ModelAdmin):
+    """
+    Configuración del admin para el modelo VideoProducto.
+    
+    Permite gestionar los videos de productos.
+    """
+    
+    list_display = ['producto', 'titulo', 'url_youtube', 'orden']
+    list_display_links = ['producto', 'titulo']
+    list_editable = ['orden']
+    list_filter = ['producto__categoria']
+    search_fields = ['producto__nombre', 'titulo']
+    ordering = ['producto', 'orden']
+
+
+@admin.register(EspecificacionProducto)
+class EspecificacionProductoAdmin(admin.ModelAdmin):
+    """
+    Configuración del admin para el modelo EspecificacionProducto.
+    
+    Permite gestionar las especificaciones técnicas de productos.
+    """
+    
+    list_display = ['producto', 'nombre', 'valor', 'orden']
+    list_display_links = ['producto', 'nombre']
+    list_editable = ['valor', 'orden']
+    list_filter = ['producto__categoria']
+    search_fields = ['producto__nombre', 'nombre', 'valor']
+    ordering = ['producto', 'orden']
 
 
 # Personalización del sitio de administración

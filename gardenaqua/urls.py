@@ -17,6 +17,9 @@ urlpatterns = [
     # Panel de administración
     path('admin/', admin.site.urls),
     
+    # CKEditor 5
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
+    
     # Aplicaciones del proyecto
     path('', include('apps.catalogo.urls', namespace='catalogo')),
     path('carrito/', include('apps.carrito.urls', namespace='carrito')),

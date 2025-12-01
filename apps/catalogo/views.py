@@ -8,7 +8,14 @@ filtrar por categorías y ver los detalles de cada producto.
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
 
-from .models import Categoria, Marca, Producto, Presentacion
+from .models import (
+    Categoria, 
+    Marca, 
+    Producto, 
+    Presentacion, 
+    VideoProducto, 
+    EspecificacionProducto
+)
 
 
 class ProductoListView(ListView):
@@ -90,17 +97,39 @@ class ProductoDetailView(DetailView):
         """Solo muestra productos activos."""
         return Producto.objects.filter(activo=True).select_related(
             'categoria', 'marca'
-        ).prefetch_related('presentaciones', 'imagenes')
+        ).prefetch_related(
+            'presentaciones', 
+            'imagenes', 
+            'videos', 
+            'especificaciones'
+        )
     
     def get_context_data(self, **kwargs):
-        """Agrega las presentaciones activas al contexto."""
+        """
+        Agrega al contexto:
+        - Presentaciones activas
+        - Imágenes para galería
+        - Imágenes para descripción
+        - Videos del producto
+        - Especificaciones técnicas
+        - Productos relacionados
+        """
         context = super().get_context_data(**kwargs)
         
         # Presentaciones activas del producto
         context['presentaciones'] = self.object.presentaciones.filter(activo=True)
         
-        # Imágenes adicionales
-        context['imagenes'] = self.object.imagenes.all()
+        # Imágenes para la galería (parte superior)
+        context['imagenes_galeria'] = self.object.imagenes_galeria
+        
+        # Imágenes para la descripción (pestaña descripción)
+        context['imagenes_descripcion'] = self.object.imagenes_descripcion
+        
+        # Videos del producto
+        context['videos'] = self.object.videos.all().order_by('orden')
+        
+        # Especificaciones técnicas
+        context['especificaciones'] = self.object.especificaciones.all().order_by('orden')
         
         # Productos relacionados (misma categoría)
         context['productos_relacionados'] = Producto.objects.filter(
