@@ -34,6 +34,13 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+# Orígenes confiables para CSRF (necesario cuando se usa proxy reverso)
+CSRF_TRUSTED_ORIGINS = [
+    f"http://{host}" for host in ALLOWED_HOSTS
+] + [
+    f"https://{host}" for host in ALLOWED_HOSTS
+]
+
 
 # =============================================================================
 # DEFINICIÓN DE APLICACIONES
