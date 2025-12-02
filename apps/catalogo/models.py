@@ -62,6 +62,15 @@ class Categoria(models.Model):
         verbose_name='Activo',
         help_text='Indica si la categoría está visible en la tienda'
     )
+    categoria_padre = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='subcategorias',
+        verbose_name='Categoría padre',
+        help_text='Categoría padre para crear subcategorías (dejar vacío si es categoría principal)'
+    )
     orden = models.PositiveIntegerField(
         default=0,
         verbose_name='Orden',
@@ -106,6 +115,78 @@ class Categoria(models.Model):
     def get_absolute_url(self):
         """Retorna la URL absoluta de la categoría."""
         return reverse('catalogo:categoria_detalle', kwargs={'slug': self.slug})
+    
+    @property
+    def es_categoria_principal(self):
+        """
+        Indica si la categoría es principal (no tiene padre).
+        
+        Returns:
+            bool: True si es categoría principal, False si es subcategoría.
+        """
+        return self.categoria_padre is None
+    
+    @property
+    def tiene_subcategorias(self):
+        """
+        Indica si la categoría tiene subcategorías.
+        
+        Returns:
+            bool: True si tiene subcategorías activas.
+        """
+        return self.subcategorias.filter(activo=True).exists()
+    
+    def obtener_subcategorias_activas(self):
+        """
+        Obtiene todas las subcategorías activas de esta categoría.
+        
+        Returns:
+            QuerySet: Subcategorías activas ordenadas.
+        """
+        return self.subcategorias.filter(activo=True).order_by('orden', 'nombre')
+    
+    def obtener_ruta_completa(self):
+        """
+        Obtiene la ruta completa de la categoría (ej: "Plantas > Plantas de Fondo").
+        
+        Returns:
+            str: Ruta completa de la categoría.
+        """
+        if self.categoria_padre:
+            return f"{self.categoria_padre.obtener_ruta_completa()} > {self.nombre}"
+        return self.nombre
+    
+    def obtener_todas_subcategorias(self):
+        """
+        Obtiene recursivamente todas las subcategorías (hijas, nietas, etc.).
+        
+        Returns:
+            list: Lista de todas las subcategorías.
+        """
+        resultado = []
+        for subcategoria in self.subcategorias.filter(activo=True):
+            resultado.append(subcategoria)
+            resultado.extend(subcategoria.obtener_todas_subcategorias())
+        return resultado
+    
+    def obtener_todos_productos(self):
+        """
+        Obtiene todos los productos de esta categoría y sus subcategorías.
+        
+        Returns:
+            QuerySet: Productos de esta categoría y subcategorías.
+        """
+        from django.db.models import Q
+        
+        # Incluir esta categoría y todas sus subcategorías
+        categorias_ids = [self.id]
+        for sub in self.obtener_todas_subcategorias():
+            categorias_ids.append(sub.id)
+        
+        return Producto.objects.filter(
+            categoria_id__in=categorias_ids,
+            activo=True
+        )
 
 
 class Marca(models.Model):

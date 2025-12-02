@@ -44,6 +44,124 @@ class CategoriaModelTest(TestCase):
         self.assertEqual(str(self.categoria), 'Acuarios')
 
 
+class SubcategoriaModelTest(TestCase):
+    """Pruebas para la funcionalidad de subcategorías."""
+    
+    def setUp(self):
+        """Configuración inicial para las pruebas de subcategorías."""
+        # Crear categoría padre
+        self.categoria_padre = Categoria.objects.create(
+            nombre='Plantas de Acuario',
+            descripcion='Plantas para acuarios'
+        )
+        # Crear subcategorías
+        self.subcategoria_1 = Categoria.objects.create(
+            nombre='Plantas de Fondo',
+            descripcion='Plantas para el fondo del acuario',
+            categoria_padre=self.categoria_padre
+        )
+        self.subcategoria_2 = Categoria.objects.create(
+            nombre='Plantas de Media',
+            descripcion='Plantas para la zona media',
+            categoria_padre=self.categoria_padre
+        )
+        # Crear sub-subcategoría (nivel 3)
+        self.sub_subcategoria = Categoria.objects.create(
+            nombre='Vallisnerias',
+            descripcion='Tipos de Vallisneria',
+            categoria_padre=self.subcategoria_1
+        )
+    
+    def test_categoria_padre_es_principal(self):
+        """Verifica que la categoría padre es categoría principal."""
+        self.assertTrue(self.categoria_padre.es_categoria_principal)
+        self.assertFalse(self.subcategoria_1.es_categoria_principal)
+    
+    def test_categoria_tiene_subcategorias(self):
+        """Verifica que la categoría padre tiene subcategorías."""
+        self.assertTrue(self.categoria_padre.tiene_subcategorias)
+        self.assertTrue(self.subcategoria_1.tiene_subcategorias)  # Tiene sub-sub
+        self.assertFalse(self.subcategoria_2.tiene_subcategorias)  # No tiene hijas
+    
+    def test_obtener_subcategorias_activas(self):
+        """Verifica que obtiene las subcategorías activas correctamente."""
+        subcategorias = self.categoria_padre.obtener_subcategorias_activas()
+        self.assertEqual(subcategorias.count(), 2)
+        self.assertIn(self.subcategoria_1, subcategorias)
+        self.assertIn(self.subcategoria_2, subcategorias)
+    
+    def test_subcategoria_inactiva_no_se_incluye(self):
+        """Verifica que las subcategorías inactivas no se incluyen."""
+        self.subcategoria_1.activo = False
+        self.subcategoria_1.save()
+        
+        subcategorias = self.categoria_padre.obtener_subcategorias_activas()
+        self.assertEqual(subcategorias.count(), 1)
+        self.assertNotIn(self.subcategoria_1, subcategorias)
+    
+    def test_obtener_ruta_completa(self):
+        """Verifica que la ruta completa se genera correctamente."""
+        self.assertEqual(
+            self.categoria_padre.obtener_ruta_completa(),
+            'Plantas de Acuario'
+        )
+        self.assertEqual(
+            self.subcategoria_1.obtener_ruta_completa(),
+            'Plantas de Acuario > Plantas de Fondo'
+        )
+        self.assertEqual(
+            self.sub_subcategoria.obtener_ruta_completa(),
+            'Plantas de Acuario > Plantas de Fondo > Vallisnerias'
+        )
+    
+    def test_obtener_todas_subcategorias_recursivo(self):
+        """Verifica que obtiene todas las subcategorías recursivamente."""
+        todas = self.categoria_padre.obtener_todas_subcategorias()
+        self.assertEqual(len(todas), 3)  # 2 hijas + 1 nieta
+        self.assertIn(self.subcategoria_1, todas)
+        self.assertIn(self.subcategoria_2, todas)
+        self.assertIn(self.sub_subcategoria, todas)
+    
+    def test_obtener_todos_productos_con_subcategorias(self):
+        """Verifica que obtiene productos de la categoría y subcategorías."""
+        # Crear marca para productos
+        marca = Marca.objects.create(nombre='Tropica')
+        
+        # Crear producto en categoría padre
+        producto_padre = Producto.objects.create(
+            nombre='Kit de Plantas',
+            categoria=self.categoria_padre,
+            marca=marca,
+            descripcion='Kit variado'
+        )
+        # Crear producto en subcategoría
+        producto_sub = Producto.objects.create(
+            nombre='Vallisneria Spiralis',
+            categoria=self.subcategoria_1,
+            marca=marca,
+            descripcion='Planta de fondo'
+        )
+        # Crear producto en sub-subcategoría
+        producto_sub_sub = Producto.objects.create(
+            nombre='Vallisneria Gigantea',
+            categoria=self.sub_subcategoria,
+            marca=marca,
+            descripcion='Planta grande de fondo'
+        )
+        
+        # Obtener todos los productos desde la categoría padre
+        productos = self.categoria_padre.obtener_todos_productos()
+        self.assertEqual(productos.count(), 3)
+        self.assertIn(producto_padre, productos)
+        self.assertIn(producto_sub, productos)
+        self.assertIn(producto_sub_sub, productos)
+    
+    def test_subcategoria_hereda_estructura(self):
+        """Verifica que el slug se genera correctamente para subcategorías."""
+        self.assertEqual(self.subcategoria_1.slug, 'plantas-de-fondo')
+        self.assertEqual(self.sub_subcategoria.slug, 'vallisnerias')
+
+
 class MarcaModelTest(TestCase):
     """Pruebas para el modelo Marca."""
     

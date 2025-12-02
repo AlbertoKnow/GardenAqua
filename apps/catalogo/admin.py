@@ -83,20 +83,31 @@ class CategoriaAdmin(admin.ModelAdmin):
     
     Proporciona una interfaz completa para gestionar las categorías
     de productos con funcionalidades de búsqueda y filtrado.
+    Soporta jerarquía de categorías padre-hijo (subcategorías).
     """
     
-    list_display = ['nombre', 'slug', 'mostrar_imagen', 'activo', 'orden', 'fecha_creacion']
-    list_display_links = ['nombre']
+    list_display = [
+        'mostrar_nombre_jerarquico', 'slug', 'mostrar_imagen', 
+        'mostrar_categoria_padre', 'mostrar_subcategorias_count',
+        'activo', 'orden', 'fecha_creacion'
+    ]
+    list_display_links = ['mostrar_nombre_jerarquico']
     list_editable = ['activo', 'orden']
-    list_filter = ['activo', 'fecha_creacion']
+    list_filter = ['activo', 'categoria_padre', 'fecha_creacion']
     search_fields = ['nombre', 'descripcion']
     prepopulated_fields = {'slug': ('nombre',)}
-    readonly_fields = ['fecha_creacion', 'fecha_actualizacion', 'mostrar_imagen_grande']
-    ordering = ['orden', 'nombre']
+    readonly_fields = ['fecha_creacion', 'fecha_actualizacion', 'mostrar_imagen_grande', 'mostrar_ruta_completa']
+    ordering = ['categoria_padre__nombre', 'orden', 'nombre']
+    autocomplete_fields = ['categoria_padre']
     
     fieldsets = (
         ('Información Principal', {
             'fields': ('nombre', 'slug', 'descripcion')
+        }),
+        ('Jerarquía', {
+            'fields': ('categoria_padre', 'mostrar_ruta_completa'),
+            'description': 'Deja vacío "Categoría padre" para crear una categoría principal. '
+                          'Selecciona una categoría padre para crear una subcategoría.'
         }),
         ('Imagen', {
             'fields': ('imagen', 'mostrar_imagen_grande')
@@ -129,6 +140,43 @@ class CategoriaAdmin(admin.ModelAdmin):
             )
         return 'Sin imagen'
     mostrar_imagen_grande.short_description = 'Vista previa'
+    
+    def mostrar_nombre_jerarquico(self, obj):
+        """Muestra el nombre con indentación visual según nivel de jerarquía."""
+        if obj.categoria_padre:
+            return format_html(
+                '<span style="color: #666; margin-right: 5px;">↳</span> {}',
+                obj.nombre
+            )
+        return format_html('<strong>{}</strong>', obj.nombre)
+    mostrar_nombre_jerarquico.short_description = 'Nombre'
+    mostrar_nombre_jerarquico.admin_order_field = 'nombre'
+    
+    def mostrar_categoria_padre(self, obj):
+        """Muestra la categoría padre o indica si es principal."""
+        if obj.categoria_padre:
+            return obj.categoria_padre.nombre
+        return format_html('<span style="color: #28a745; font-weight: bold;">Principal</span>')
+    mostrar_categoria_padre.short_description = 'Categoría padre'
+    mostrar_categoria_padre.admin_order_field = 'categoria_padre__nombre'
+    
+    def mostrar_subcategorias_count(self, obj):
+        """Muestra la cantidad de subcategorías activas."""
+        count = obj.subcategorias.filter(activo=True).count()
+        if count > 0:
+            return format_html(
+                '<span style="background: #17a2b8; color: white; padding: 2px 8px; border-radius: 10px;">{}</span>',
+                count
+            )
+        return '-'
+    mostrar_subcategorias_count.short_description = 'Subcategorías'
+    
+    def mostrar_ruta_completa(self, obj):
+        """Muestra la ruta jerárquica completa de la categoría."""
+        if obj.pk:
+            return obj.obtener_ruta_completa()
+        return 'Se mostrará después de guardar'
+    mostrar_ruta_completa.short_description = 'Ruta completa'
 
 
 @admin.register(Marca)
