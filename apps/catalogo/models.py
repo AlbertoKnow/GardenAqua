@@ -315,6 +315,16 @@ class Producto(models.Model):
         return None
     
     @property
+    def tiene_oferta(self):
+        """
+        Indica si al menos una presentación tiene precio de oferta.
+        """
+        return self.presentaciones.filter(
+            activo=True, 
+            precio_oferta__isnull=False
+        ).exists()
+    
+    @property
     def tiene_stock(self):
         """Indica si al menos una presentación tiene stock disponible."""
         return self.presentaciones.filter(activo=True, stock__gt=0).exists()
@@ -523,6 +533,19 @@ class Presentacion(models.Model):
     def tiene_oferta(self):
         """Indica si la presentación tiene un precio de oferta activo."""
         return self.precio_oferta is not None
+    
+    @property
+    def porcentaje_descuento(self):
+        """
+        Calcula el porcentaje de descuento.
+        
+        Returns:
+            int: Porcentaje de descuento redondeado, o 0 si no hay oferta.
+        """
+        if self.tiene_oferta and self.precio > 0:
+            descuento = ((self.precio - self.precio_oferta) / self.precio) * 100
+            return round(descuento)
+        return 0
     
     @property
     def disponible(self):

@@ -279,9 +279,19 @@
                     
                     <!-- Precio -->
                     <div class="mb-4">
-                        {% if producto.precio_minimo %}
-                        <span class="price-display">S/ {{ producto.precio_minimo }}</span>
+                        {% with presentacion=presentaciones.0 %}
+                        {% if presentacion %}
+                            {% if presentacion.tiene_oferta %}
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <span class="text-muted text-decoration-line-through fs-5">S/ {{ presentacion.precio }}</span>
+                                <span class="price-display text-danger">S/ {{ presentacion.precio_oferta }}</span>
+                                <span class="badge bg-danger fs-6">-{{ presentacion.porcentaje_descuento }}%</span>
+                            </div>
+                            {% else %}
+                            <span class="price-display">S/ {{ presentacion.precio }}</span>
+                            {% endif %}
                         {% endif %}
+                        {% endwith %}
                     </div>
                     
                     <!-- Stock -->
@@ -325,9 +335,17 @@
                                 {% for p in presentaciones %}
                                 <option value="{{ p.id }}" 
                                         data-precio="{{ p.precio_actual }}"
+                                        data-precio-original="{{ p.precio }}"
+                                        data-tiene-oferta="{{ p.tiene_oferta|yesno:'true,false' }}"
+                                        data-descuento="{{ p.porcentaje_descuento }}"
                                         data-stock="{{ p.stock }}"
                                         {% if not p.stock %}disabled{% endif %}>
-                                    {{ p.nombre }} - S/ {{ p.precio_actual }}
+                                    {{ p.nombre }} - 
+                                    {% if p.tiene_oferta %}
+                                    S/ {{ p.precio_oferta }} (antes S/ {{ p.precio }})
+                                    {% else %}
+                                    S/ {{ p.precio }}
+                                    {% endif %}
                                     {% if not p.stock %}(Agotado){% endif %}
                                 </option>
                                 {% endfor %}
@@ -577,12 +595,26 @@
             presentacionSelect.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
                 const precio = selectedOption.dataset.precio;
+                const precioOriginal = selectedOption.dataset.precioOriginal;
+                const tieneOferta = selectedOption.dataset.tieneOferta === 'true';
+                const descuento = selectedOption.dataset.descuento;
                 const stock = selectedOption.dataset.stock;
                 
                 // Actualizar precio mostrado
-                const priceDisplay = document.querySelector('.price-display');
-                if (priceDisplay && precio) {
-                    priceDisplay.textContent = 'S/ ' + precio;
+                const priceContainer = document.querySelector('.mb-4:has(.price-display)') || 
+                                       document.querySelector('.price-display').parentElement;
+                if (priceContainer && precio) {
+                    if (tieneOferta) {
+                        priceContainer.innerHTML = `
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <span class="text-muted text-decoration-line-through fs-5">S/ ${precioOriginal}</span>
+                                <span class="price-display text-danger">S/ ${precio}</span>
+                                <span class="badge bg-danger fs-6">-${descuento}%</span>
+                            </div>
+                        `;
+                    } else {
+                        priceContainer.innerHTML = `<span class="price-display">S/ ${precio}</span>`;
+                    }
                 }
                 
                 // Actualizar máximo de cantidad

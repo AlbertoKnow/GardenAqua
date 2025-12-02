@@ -145,6 +145,31 @@ class PresentacionModelTest(TestCase):
         self.presentacion.precio_oferta = Decimal('120.00')
         self.presentacion.save()
         self.assertEqual(self.presentacion.precio_actual, Decimal('120.00'))
+    
+    def test_tiene_oferta(self):
+        """Verifica la propiedad tiene_oferta."""
+        # Sin oferta
+        self.assertFalse(self.presentacion.tiene_oferta)
+        
+        # Con oferta
+        self.presentacion.precio_oferta = Decimal('120.00')
+        self.presentacion.save()
+        self.assertTrue(self.presentacion.tiene_oferta)
+    
+    def test_porcentaje_descuento(self):
+        """Verifica el cálculo del porcentaje de descuento."""
+        # Sin oferta
+        self.assertEqual(self.presentacion.porcentaje_descuento, 0)
+        
+        # Con 20% de descuento (150 -> 120)
+        self.presentacion.precio_oferta = Decimal('120.00')
+        self.presentacion.save()
+        self.assertEqual(self.presentacion.porcentaje_descuento, 20)
+        
+        # Con 50% de descuento (150 -> 75)
+        self.presentacion.precio_oferta = Decimal('75.00')
+        self.presentacion.save()
+        self.assertEqual(self.presentacion.porcentaje_descuento, 50)
 
 
 class ImagenProductoModelTest(TestCase):
