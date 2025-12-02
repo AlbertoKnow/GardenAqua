@@ -26,7 +26,9 @@
         border-bottom: 1px solid var(--color-gray-200);
     }
     .categoria-link {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 0.6rem 0.75rem;
         color: var(--color-gray-600);
         text-decoration: none;
@@ -43,6 +45,40 @@
         background: var(--color-dark);
         color: white;
         font-weight: 500;
+    }
+    /* Estilos para categorías jerárquicas */
+    .categoria-padre {
+        font-weight: 500;
+    }
+    .categoria-padre .toggle-icon {
+        font-size: 0.7rem;
+        transition: transform 0.2s ease;
+    }
+    .categoria-item.expanded .toggle-icon {
+        transform: rotate(180deg);
+    }
+    .subcategorias-list {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        padding-left: 0.5rem;
+        margin-left: 0.75rem;
+        border-left: 2px solid var(--color-gray-200);
+    }
+    .categoria-item.expanded .subcategorias-list {
+        max-height: 500px;
+    }
+    .subcategoria-link {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+        color: var(--color-gray-500);
+    }
+    .subcategoria-link:hover {
+        color: var(--color-dark);
+    }
+    .subcategoria-link.active {
+        background: var(--color-primary);
+        color: white;
     }
     .section-title {
         font-weight: 600;
@@ -99,11 +135,26 @@
                         </a>
                     </li>
                     {% for categoria in categorias %}
-                    <li>
+                    <li class="categoria-item">
                         <a href="{% url 'catalogo:categoria_detalle' categoria.slug %}{% if marca_actual %}?marca={{ marca_actual.slug }}{% endif %}" 
-                           class="categoria-link {% if categoria_actual.slug == categoria.slug %}active{% endif %}">
-                            {{ categoria.nombre }}
+                           class="categoria-link categoria-padre {% if categoria_actual.slug == categoria.slug %}active{% endif %}">
+                            <span>{{ categoria.nombre }}</span>
+                            {% if categoria.tiene_subcategorias %}
+                            <i class="bi bi-chevron-down toggle-icon"></i>
+                            {% endif %}
                         </a>
+                        {% if categoria.tiene_subcategorias %}
+                        <ul class="subcategorias-list list-unstyled">
+                            {% for subcategoria in categoria.obtener_subcategorias_activas %}
+                            <li>
+                                <a href="{% url 'catalogo:categoria_detalle' subcategoria.slug %}{% if marca_actual %}?marca={{ marca_actual.slug }}{% endif %}" 
+                                   class="categoria-link subcategoria-link {% if categoria_actual.slug == subcategoria.slug %}active{% endif %}">
+                                    {{ subcategoria.nombre }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
@@ -236,4 +287,44 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle de subcategorías
+    const categoriasPadre = document.querySelectorAll('.categoria-padre');
+    
+    categoriasPadre.forEach(function(link) {
+        const toggleIcon = link.querySelector('.toggle-icon');
+        if (toggleIcon) {
+            // Prevenir navegación al hacer clic en el icono
+            toggleIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const categoriaItem = link.closest('.categoria-item');
+                categoriaItem.classList.toggle('expanded');
+            });
+        }
+    });
+    
+    // Expandir automáticamente si hay una subcategoría activa
+    const subcategoriaActiva = document.querySelector('.subcategoria-link.active');
+    if (subcategoriaActiva) {
+        const categoriaItem = subcategoriaActiva.closest('.categoria-item');
+        if (categoriaItem) {
+            categoriaItem.classList.add('expanded');
+        }
+    }
+    
+    // Expandir automáticamente si la categoría padre está activa
+    const categoriaPadreActiva = document.querySelector('.categoria-padre.active');
+    if (categoriaPadreActiva) {
+        const categoriaItem = categoriaPadreActiva.closest('.categoria-item');
+        if (categoriaItem) {
+            categoriaItem.classList.add('expanded');
+        }
+    }
+});
+</script>
 {% endblock %}

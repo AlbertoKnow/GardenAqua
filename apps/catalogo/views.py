@@ -58,8 +58,11 @@ class ProductoListView(ListView):
         """Agrega las categorías y marcas al contexto."""
         context = super().get_context_data(**kwargs)
         
-        # Todas las categorías activas
-        context['categorias'] = Categoria.objects.filter(activo=True)
+        # Solo categorías principales (sin padre) con sus subcategorías
+        context['categorias'] = Categoria.objects.filter(
+            activo=True,
+            categoria_padre__isnull=True
+        ).prefetch_related('subcategorias')
         
         # Todas las marcas activas
         context['marcas'] = Marca.objects.filter(activo=True)
