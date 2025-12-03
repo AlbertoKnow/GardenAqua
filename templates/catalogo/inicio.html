@@ -79,29 +79,21 @@
 
 <!-- Marcas Destacadas -->
 {% if marcas %}
-<section class="py-4" style="background: var(--color-gray-50);">
+<section class="py-4">
     <div class="container">
-        <div class="section-header">
-            <div>
-                <h2 class="section-title" style="font-size: 1.5rem;">Nuestras Marcas</h2>
-                <p class="section-subtitle">Trabajamos con las mejores marcas del mercado</p>
-            </div>
+        <div class="text-center mb-3">
+            <span class="text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Marcas que trabajamos</span>
         </div>
         
-        <div class="row g-3 justify-content-center">
+        <div class="marcas-strip">
             {% for marca in marcas %}
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                <a href="{% url 'catalogo:producto_lista' %}?marca={{ marca.slug }}" class="marca-item" aria-label="Ver productos de {{ marca.nombre }}">
-                    <div class="logo-wrapper">
-                        {% if marca.logo %}
-                        <img src="{{ marca.logo.url }}" alt="{{ marca.nombre }}" loading="lazy" decoding="async">
-                        {% else %}
-                        <i class="bi bi-building" style="font-size: 2rem; color: var(--color-gray-400);" aria-hidden="true"></i>
-                        {% endif %}
-                    </div>
-                    <span>{{ marca.nombre }}</span>
-                </a>
-            </div>
+            <a href="{% url 'catalogo:producto_lista' %}?marca={{ marca.slug }}" class="marca-logo" title="Ver productos {{ marca.nombre }}">
+                {% if marca.logo %}
+                <img src="{{ marca.logo.url }}" alt="{{ marca.nombre }}" loading="lazy" decoding="async">
+                {% else %}
+                <span class="marca-text">{{ marca.nombre }}</span>
+                {% endif %}
+            </a>
             {% endfor %}
         </div>
     </div>
