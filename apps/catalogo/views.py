@@ -35,6 +35,7 @@ class ProductoListView(ListView):
         Obtiene los productos filtrados.
         
         Filtra por categoría si se proporciona el slug en la URL.
+        Si la categoría es padre, incluye productos de todas sus subcategorías.
         Solo muestra productos activos con presentaciones activas.
         """
         queryset = Producto.objects.filter(
@@ -45,7 +46,15 @@ class ProductoListView(ListView):
         # Filtrar por categoría si se proporciona
         categoria_slug = self.kwargs.get('categoria_slug')
         if categoria_slug:
-            queryset = queryset.filter(categoria__slug=categoria_slug)
+            categoria = get_object_or_404(Categoria, slug=categoria_slug, activo=True)
+            
+            # Obtener IDs de la categoría y todas sus subcategorías
+            categorias_ids = [categoria.id]
+            subcategorias = categoria.subcategorias.filter(activo=True)
+            if subcategorias.exists():
+                categorias_ids.extend(subcategorias.values_list('id', flat=True))
+            
+            queryset = queryset.filter(categoria_id__in=categorias_ids)
         
         # Filtrar por marca si se proporciona
         marca_slug = self.request.GET.get('marca')
