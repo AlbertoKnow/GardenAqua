@@ -20,47 +20,41 @@ from django.core.files.base import ContentFile
 from apps.catalogo.models import Producto, ImagenProducto
 
 
-# URLs de imágenes de productos Seachem Tidal
+# URLs de imágenes de productos Seachem Tidal (CDN oficial)
 IMAGENES_TIDAL = {
-    'seachem-tidal-35': [
-        'https://seachem.com/img/products/tidal-35.png',
+    'filtro-tidal-35-seachem': [
+        'https://www.seachem.com/img/products/tidal-35.png',
     ],
-    'seachem-tidal-55': [
-        'https://seachem.com/img/products/tidal-55.png',
+    'filtro-tidal-55-seachem': [
+        'https://www.seachem.com/img/products/tidal-55.png',
     ],
-    'seachem-tidal-75': [
-        'https://seachem.com/img/products/tidal-75.png',
+    'filtro-tidal-75-seachem': [
+        'https://www.seachem.com/img/products/tidal-75.png',
     ],
-    'seachem-tidal-110': [
-        'https://seachem.com/img/products/tidal-110.png',
+    'filtro-tidal-110-seachem': [
+        'https://www.seachem.com/img/products/tidal-110.png',
     ],
 }
 
-# URLs de imágenes de plantas Tropica (usando sus CDN públicos)
+# URLs de imágenes de plantas acuáticas (Wikimedia Commons - dominio público)
 IMAGENES_PLANTAS = {
-    'taxiphyllum-barbieri-java-moss': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/003%20TC/003%20ATC%20Taxiphyllum%20barbieri%201.jpg&width=600',
-    ],
-    'microsorum-pteropus-java-fern': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/008%20Pot/008%20Pot%20Microsorum%20pteropus%201.jpg&width=600',
-    ],
-    'anubias-barteri-var-nana': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/101%20Pot/101%20Pot%20Anubias%20barteri%20var%20nana%201.jpg&width=600',
-    ],
-    'bucephalandra-green-wavy': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/138%20TC/138%20TC%20Bucephalandra%20Green%20Wavy.jpg&width=600',
-    ],
-    'echinodorus-bleheri-amazon-sword': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/071%20Pot/071%20Pot%20Echinodorus%20bleheri%201.jpg&width=600',
-    ],
     'vallisneria-spiralis': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/133%20Bunch/133%20Bunch%20Vallisneria%20spiralis%20Leopard%201.jpg&width=600',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vallisneria_spiralis.jpg/440px-Vallisneria_spiralis.jpg',
     ],
-    'eleocharis-acicularis-mini': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/132%20TC/132B%20TC%20Eleocharis%20acicularis%20Mini%201.jpg&width=600',
+    'echinodorus-bleheri': [
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Echinodorus_bleheri.jpg/440px-Echinodorus_bleheri.jpg',
     ],
-    'hemianthus-callitrichoides-cuba': [
-        'https://tropica.com/imagegen.ashx?image=/Plants/048B%20TC/048B%20TC%20Hemianthus%20callitrichoides%20Cuba%201.jpg&width=600',
+    'cryptocoryne-wendtii-green': [
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Cryptocoryne_wendtii.jpg/440px-Cryptocoryne_wendtii.jpg',
+    ],
+    'anubias-barteri': [
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Anubias_barteri_var._nana.jpg/440px-Anubias_barteri_var._nana.jpg',
+    ],
+    'eleocharis-parvula': [
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Eleocharis_parvula.jpg/440px-Eleocharis_parvula.jpg',
+    ],
+    'staurogyne-repens': [
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Staurogyne_repens.jpg/440px-Staurogyne_repens.jpg',
     ],
 }
 
