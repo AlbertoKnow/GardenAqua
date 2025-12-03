@@ -20,41 +20,41 @@ from django.core.files.base import ContentFile
 from apps.catalogo.models import Producto, ImagenProducto
 
 
-# URLs de imágenes de productos Seachem Tidal (CDN oficial)
+# URLs de imágenes de filtros (placeholder con imagen de filtro genérico de Unsplash)
 IMAGENES_TIDAL = {
     'filtro-tidal-35-seachem': [
-        'https://www.seachem.com/img/products/tidal-35.png',
+        'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&q=80',
     ],
     'filtro-tidal-55-seachem': [
-        'https://www.seachem.com/img/products/tidal-55.png',
+        'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&q=80',
     ],
     'filtro-tidal-75-seachem': [
-        'https://www.seachem.com/img/products/tidal-75.png',
+        'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&q=80',
     ],
     'filtro-tidal-110-seachem': [
-        'https://www.seachem.com/img/products/tidal-110.png',
+        'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&q=80',
     ],
 }
 
-# URLs de imágenes de plantas acuáticas (Pixabay - libre uso comercial)
+# URLs de imágenes de plantas acuáticas (Unsplash - libre uso)
 IMAGENES_PLANTAS = {
     'vallisneria-spiralis': [
-        'https://cdn.pixabay.com/photo/2016/11/29/07/16/aquarium-1868420_640.jpg',
+        'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=600&q=80',
     ],
     'echinodorus-bleheri': [
-        'https://cdn.pixabay.com/photo/2017/08/06/18/17/aquarium-2596928_640.jpg',
+        'https://images.unsplash.com/photo-1520302519878-3286deb3a2c1?w=600&q=80',
     ],
     'cryptocoryne-wendtii-green': [
-        'https://cdn.pixabay.com/photo/2020/04/25/11/33/freshwater-aquarium-5090551_640.jpg',
+        'https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=600&q=80',
     ],
     'anubias-barteri': [
-        'https://cdn.pixabay.com/photo/2019/04/04/14/37/aquarium-4103361_640.jpg',
+        'https://images.unsplash.com/photo-1504472478235-9bc48ba4d60f?w=600&q=80',
     ],
     'eleocharis-parvula': [
-        'https://cdn.pixabay.com/photo/2016/11/29/13/04/aquarium-1869716_640.jpg',
+        'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&q=80',
     ],
     'staurogyne-repens': [
-        'https://cdn.pixabay.com/photo/2018/05/08/21/28/aquarium-3384378_640.jpg',
+        'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600&q=80',
     ],
 }
 
