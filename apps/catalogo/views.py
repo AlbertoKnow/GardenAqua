@@ -157,8 +157,11 @@ def inicio(request):
         presentaciones__activo=True
     ).distinct().select_related('categoria', 'marca').prefetch_related('presentaciones')[:8]
     
-    # Categorías principales
-    categorias = Categoria.objects.filter(activo=True)[:6]
+    # Categorías principales (solo las que no tienen padre)
+    categorias = Categoria.objects.filter(
+        activo=True,
+        categoria_padre__isnull=True
+    ).prefetch_related('subcategorias')[:6]
     
     # Productos recientes
     productos_recientes = Producto.objects.filter(
