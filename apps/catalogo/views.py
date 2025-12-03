@@ -152,7 +152,7 @@ def inicio(request):
     """
     Vista de la página de inicio.
     
-    Muestra productos destacados y categorías principales.
+    Muestra productos destacados, categorías principales y marcas.
     """
     # Productos destacados
     productos_destacados = Producto.objects.filter(
@@ -167,10 +167,18 @@ def inicio(request):
         presentaciones__activo=True
     ).distinct().select_related('categoria', 'marca').prefetch_related('presentaciones').order_by('-fecha_creacion')[:8]
     
+    # Marcas activas con productos
+    marcas = Marca.objects.filter(
+        activo=True,
+        productos__activo=True,
+        productos__presentaciones__activo=True
+    ).distinct().order_by('nombre')[:8]
+    
     # Las categorías ya vienen del context_processor 'categorias'
     context = {
         'productos_destacados': productos_destacados,
         'productos_recientes': productos_recientes,
+        'marcas': marcas,
     }
     
     return render(request, 'catalogo/inicio.html', context)

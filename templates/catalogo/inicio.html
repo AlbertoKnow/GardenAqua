@@ -43,11 +43,11 @@
 
 <!-- Categorías Destacadas -->
 {% if categorias %}
-<section class="py-5">
+<section class="py-4">
     <div class="container">
         <div class="section-header">
             <div>
-                <h2 class="section-title">Categorías</h2>
+                <h2 class="section-title" style="font-size: 1.5rem;">Categorías</h2>
                 <p class="section-subtitle">Explora nuestro catálogo</p>
             </div>
             <a href="{% url 'catalogo:producto_lista' %}" class="section-link" aria-label="Ver todas las categorías">
@@ -55,20 +55,51 @@
             </a>
         </div>
         
-        <div class="row g-4 justify-content-center">
+        <div class="row g-3 justify-content-center">
             {% for categoria in categorias|slice:":10" %}
-            <div class="col-4 col-sm-3 col-md-2">
+            <div class="col-4 col-sm-3 col-md-2 col-lg-auto">
                 <a href="{% url 'catalogo:categoria_detalle' categoria.slug %}" class="categoria-circle" aria-label="Ver productos de {{ categoria.nombre }}">
                     <div class="img-wrapper">
                         {% if categoria.imagen %}
                         <img src="{{ categoria.imagen.url }}" alt="{{ categoria.nombre }}" loading="lazy" decoding="async">
                         {% else %}
                         <div class="d-flex align-items-center justify-content-center h-100" style="background: var(--color-gray-100);" role="img" aria-label="Sin imagen">
-                            <i class="bi bi-box-seam" style="font-size: 1.5rem; color: var(--color-gray-500);" aria-hidden="true"></i>
+                            <i class="bi bi-box-seam" style="font-size: 1.2rem; color: var(--color-gray-500);" aria-hidden="true"></i>
                         </div>
                         {% endif %}
                     </div>
                     <span>{{ categoria.nombre }}</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Marcas Destacadas -->
+{% if marcas %}
+<section class="py-4" style="background: var(--color-gray-50);">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title" style="font-size: 1.5rem;">Nuestras Marcas</h2>
+                <p class="section-subtitle">Trabajamos con las mejores marcas del mercado</p>
+            </div>
+        </div>
+        
+        <div class="row g-3 justify-content-center">
+            {% for marca in marcas %}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <a href="{% url 'catalogo:producto_lista' %}?marca={{ marca.slug }}" class="marca-item" aria-label="Ver productos de {{ marca.nombre }}">
+                    <div class="logo-wrapper">
+                        {% if marca.logo %}
+                        <img src="{{ marca.logo.url }}" alt="{{ marca.nombre }}" loading="lazy" decoding="async">
+                        {% else %}
+                        <i class="bi bi-building" style="font-size: 2rem; color: var(--color-gray-400);" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                    <span>{{ marca.nombre }}</span>
                 </a>
             </div>
             {% endfor %}

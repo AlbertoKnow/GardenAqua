@@ -309,11 +309,11 @@
         }
         
         .categoria-circle .img-wrapper {
-            width: 100px;
-            height: 100px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             overflow: hidden;
-            margin: 0 auto 0.75rem;
+            margin: 0 auto 0.5rem;
             border: 2px solid var(--color-gray-200);
             transition: var(--transition);
             background: var(--color-gray-100);
@@ -331,9 +331,63 @@
         }
         
         .categoria-circle span {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 500;
             color: var(--color-gray-700);
+        }
+        
+        /* ================================
+           MARCAS DESTACADAS
+        ================================ */
+        .marca-item {
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: var(--transition);
+            padding: 1rem;
+            border-radius: var(--radius);
+            background: white;
+            border: 1px solid var(--color-gray-200);
+        }
+        
+        .marca-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--color-gray-300);
+        }
+        
+        .marca-item .logo-wrapper {
+            width: 80px;
+            height: 50px;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .marca-item .logo-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        
+        .marca-item:hover .logo-wrapper img {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        
+        .marca-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+        
+        .marca-item:hover span {
+            color: var(--color-dark);
         }
         
         .categoria-circle:hover span {
