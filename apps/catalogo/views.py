@@ -55,16 +55,11 @@ class ProductoListView(ListView):
         return queryset
     
     def get_context_data(self, **kwargs):
-        """Agrega las categorías y marcas al contexto."""
+        """Agrega las marcas y filtros actuales al contexto."""
         context = super().get_context_data(**kwargs)
         
-        # Solo categorías principales (sin padre) con sus subcategorías
-        context['categorias'] = Categoria.objects.filter(
-            activo=True,
-            categoria_padre__isnull=True
-        ).prefetch_related('subcategorias')
-        
-        # Todas las marcas activas
+        # Las categorías ya vienen del context_processor 'categorias'
+        # Solo agregamos las marcas activas
         context['marcas'] = Marca.objects.filter(activo=True)
         
         # Categoría actual (si hay filtro)
@@ -157,21 +152,15 @@ def inicio(request):
         presentaciones__activo=True
     ).distinct().select_related('categoria', 'marca').prefetch_related('presentaciones')[:8]
     
-    # Categorías principales (solo las que no tienen padre)
-    categorias = Categoria.objects.filter(
-        activo=True,
-        categoria_padre__isnull=True
-    ).prefetch_related('subcategorias')[:6]
-    
     # Productos recientes
     productos_recientes = Producto.objects.filter(
         activo=True,
         presentaciones__activo=True
     ).distinct().select_related('categoria', 'marca').prefetch_related('presentaciones').order_by('-fecha_creacion')[:8]
     
+    # Las categorías ya vienen del context_processor 'categorias'
     context = {
         'productos_destacados': productos_destacados,
-        'categorias': categorias,
         'productos_recientes': productos_recientes,
     }
     
