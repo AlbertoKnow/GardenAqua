@@ -94,15 +94,22 @@ class Categoria(models.Model):
         """Retorna el nombre de la categoría como representación en cadena."""
         return self.nombre
     
+    def __init__(self, *args, **kwargs):
+        """Guarda el nombre original para detectar cambios."""
+        super().__init__(*args, **kwargs)
+        self._nombre_original = self.nombre
+    
     def save(self, *args, **kwargs):
         """
         Sobrescribe el método save para generar el slug automáticamente
         y convertir la imagen a WebP.
         
-        Si no se proporciona un slug, se genera a partir del nombre
-        usando la librería python-slugify.
+        El slug se genera o actualiza cuando:
+        - No existe slug (nuevo registro)
+        - El nombre ha cambiado
         """
-        if not self.slug:
+        # Regenerar slug si es nuevo o si cambió el nombre
+        if not self.slug or self.nombre != self._nombre_original:
             self.slug = slugify(self.nombre)
         
         # Convertir imagen a WebP si es necesario
@@ -111,6 +118,8 @@ class Categoria(models.Model):
             self.imagen.save(nuevo_nombre, nuevo_contenido, save=False)
         
         super().save(*args, **kwargs)
+        # Actualizar nombre original después de guardar
+        self._nombre_original = self.nombre
     
     def get_absolute_url(self):
         """Retorna la URL absoluta de la categoría."""
@@ -243,11 +252,19 @@ class Marca(models.Model):
         """Retorna el nombre de la marca como representación en cadena."""
         return self.nombre
     
+    def __init__(self, *args, **kwargs):
+        """Guarda el nombre original para detectar cambios."""
+        super().__init__(*args, **kwargs)
+        self._nombre_original = self.nombre
+    
     def save(self, *args, **kwargs):
         """
         Genera el slug automáticamente y convierte el logo a WebP.
+        
+        El slug se regenera si el nombre ha cambiado.
         """
-        if not self.slug:
+        # Regenerar slug si es nuevo o si cambió el nombre
+        if not self.slug or self.nombre != self._nombre_original:
             self.slug = slugify(self.nombre)
         
         # Convertir logo a WebP si es necesario
@@ -256,6 +273,8 @@ class Marca(models.Model):
             self.logo.save(nuevo_nombre, nuevo_contenido, save=False)
         
         super().save(*args, **kwargs)
+        # Actualizar nombre original después de guardar
+        self._nombre_original = self.nombre
 
 
 class Producto(models.Model):
@@ -365,16 +384,26 @@ class Producto(models.Model):
             return f"{self.nombre} - {self.marca.nombre}"
         return self.nombre
     
+    def __init__(self, *args, **kwargs):
+        """Guarda el nombre original para detectar cambios."""
+        super().__init__(*args, **kwargs)
+        self._nombre_original = self.nombre
+    
     def save(self, *args, **kwargs):
         """
         Sobrescribe el método save para generar el slug automáticamente.
         
-        Si no se proporciona un slug, se genera a partir del nombre
-        usando la librería python-slugify.
+        El slug se genera o actualiza cuando:
+        - No existe slug (nuevo registro)
+        - El nombre ha cambiado
         """
-        if not self.slug:
+        # Regenerar slug si es nuevo o si cambió el nombre
+        if not self.slug or self.nombre != self._nombre_original:
             self.slug = slugify(self.nombre)
+        
         super().save(*args, **kwargs)
+        # Actualizar nombre original después de guardar
+        self._nombre_original = self.nombre
     
     def get_absolute_url(self):
         """Retorna la URL absoluta del producto."""
