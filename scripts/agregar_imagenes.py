@@ -36,25 +36,25 @@ IMAGENES_TIDAL = {
     ],
 }
 
-# URLs de imágenes de plantas acuáticas (Wikimedia Commons - dominio público)
+# URLs de imágenes de plantas acuáticas (Pixabay - libre uso comercial)
 IMAGENES_PLANTAS = {
     'vallisneria-spiralis': [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vallisneria_spiralis.jpg/440px-Vallisneria_spiralis.jpg',
+        'https://cdn.pixabay.com/photo/2016/11/29/07/16/aquarium-1868420_640.jpg',
     ],
     'echinodorus-bleheri': [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Echinodorus_bleheri.jpg/440px-Echinodorus_bleheri.jpg',
+        'https://cdn.pixabay.com/photo/2017/08/06/18/17/aquarium-2596928_640.jpg',
     ],
     'cryptocoryne-wendtii-green': [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Cryptocoryne_wendtii.jpg/440px-Cryptocoryne_wendtii.jpg',
+        'https://cdn.pixabay.com/photo/2020/04/25/11/33/freshwater-aquarium-5090551_640.jpg',
     ],
     'anubias-barteri': [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Anubias_barteri_var._nana.jpg/440px-Anubias_barteri_var._nana.jpg',
+        'https://cdn.pixabay.com/photo/2019/04/04/14/37/aquarium-4103361_640.jpg',
     ],
     'eleocharis-parvula': [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Eleocharis_parvula.jpg/440px-Eleocharis_parvula.jpg',
+        'https://cdn.pixabay.com/photo/2016/11/29/13/04/aquarium-1869716_640.jpg',
     ],
     'staurogyne-repens': [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Staurogyne_repens.jpg/440px-Staurogyne_repens.jpg',
+        'https://cdn.pixabay.com/photo/2018/05/08/21/28/aquarium-3384378_640.jpg',
     ],
 }
 
@@ -127,7 +127,7 @@ def agregar_imagen_producto(producto, url, es_principal=True, orden=0):
         es_principal=es_principal,
         mostrar_en_galeria=True,
         orden=orden,
-        alt_text=f"{producto.nombre}"
+        titulo=f"{producto.nombre}"
     )
     
     # Guardar la imagen
