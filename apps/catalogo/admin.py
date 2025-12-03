@@ -229,6 +229,12 @@ class ProductoAdmin(admin.ModelAdmin):
     Las imágenes se gestionan a través del inline de Imágenes de Productos.
     """
     
+    class Media:
+        """Archivos CSS adicionales para el admin de Producto."""
+        css = {
+            'all': ('css/admin_ckeditor_dark.css',)
+        }
+    
     list_display = [
         'nombre', 'categoria', 'marca', 'modelo', 'mostrar_imagen',
         'mostrar_precio_desde', 'mostrar_presentaciones', 'mostrar_imagenes', 'activo', 'destacado'

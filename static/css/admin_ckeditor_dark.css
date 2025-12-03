@@ -1,0 +1,163 @@
+/**
+ * Estilos para CKEditor 5 en modo oscuro del Django Admin.
+ * 
+ * Corrige los colores del editor cuando el admin está en modo oscuro,
+ * asegurando que el texto sea legible.
+ */
+
+/* Detectar modo oscuro del admin de Django */
+@media (prefers-color-scheme: dark) {
+    /* Fondo y texto del área editable de CKEditor */
+    .ck.ck-editor__main > .ck-editor__editable {
+        background-color: #1e1e1e !important;
+        color: #e0e0e0 !important;
+    }
+    
+    .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+        background-color: #1e1e1e !important;
+        color: #e0e0e0 !important;
+    }
+    
+    /* Placeholder del editor */
+    .ck.ck-editor__editable > .ck-placeholder::before {
+        color: #888 !important;
+    }
+    
+    /* Toolbar del editor */
+    .ck.ck-toolbar {
+        background-color: #2d2d2d !important;
+        border-color: #444 !important;
+    }
+    
+    .ck.ck-toolbar__items button {
+        color: #e0e0e0 !important;
+    }
+    
+    .ck.ck-toolbar__items button:hover {
+        background-color: #3d3d3d !important;
+    }
+    
+    /* Borde del editor */
+    .ck.ck-editor__editable.ck-focused {
+        border-color: #0d6efd !important;
+    }
+    
+    .ck.ck-editor {
+        border-color: #444 !important;
+    }
+    
+    /* Dropdown menus */
+    .ck.ck-dropdown__panel {
+        background-color: #2d2d2d !important;
+        border-color: #444 !important;
+    }
+    
+    .ck.ck-list__item .ck-button {
+        color: #e0e0e0 !important;
+    }
+    
+    .ck.ck-list__item .ck-button:hover {
+        background-color: #3d3d3d !important;
+    }
+}
+
+/* También aplicar cuando el body tiene la clase dark-theme del admin de Django */
+body[data-theme="dark"] .ck.ck-editor__main > .ck-editor__editable,
+body.dark .ck.ck-editor__main > .ck-editor__editable,
+html[data-theme="dark"] .ck.ck-editor__main > .ck-editor__editable {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+}
+
+body[data-theme="dark"] .ck.ck-editor__editable:not(.ck-editor__nested-editable),
+body.dark .ck.ck-editor__editable:not(.ck-editor__nested-editable),
+html[data-theme="dark"] .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+}
+
+body[data-theme="dark"] .ck.ck-editor__editable > .ck-placeholder::before,
+body.dark .ck.ck-editor__editable > .ck-placeholder::before,
+html[data-theme="dark"] .ck.ck-editor__editable > .ck-placeholder::before {
+    color: #888 !important;
+}
+
+body[data-theme="dark"] .ck.ck-toolbar,
+body.dark .ck.ck-toolbar,
+html[data-theme="dark"] .ck.ck-toolbar {
+    background-color: #2d2d2d !important;
+    border-color: #444 !important;
+}
+
+body[data-theme="dark"] .ck.ck-toolbar__items button,
+body.dark .ck.ck-toolbar__items button,
+html[data-theme="dark"] .ck.ck-toolbar__items button {
+    color: #e0e0e0 !important;
+}
+
+body[data-theme="dark"] .ck.ck-toolbar__items button:hover,
+body.dark .ck.ck-toolbar__items button:hover,
+html[data-theme="dark"] .ck.ck-toolbar__items button:hover {
+    background-color: #3d3d3d !important;
+}
+
+body[data-theme="dark"] .ck.ck-dropdown__panel,
+body.dark .ck.ck-dropdown__panel,
+html[data-theme="dark"] .ck.ck-dropdown__panel {
+    background-color: #2d2d2d !important;
+    border-color: #444 !important;
+}
+
+body[data-theme="dark"] .ck.ck-list__item .ck-button,
+body.dark .ck.ck-list__item .ck-button,
+html[data-theme="dark"] .ck.ck-list__item .ck-button {
+    color: #e0e0e0 !important;
+}
+
+/* Soporte para el selector de tema de Django 4.1+ */
+:root[data-theme="dark"] .ck.ck-editor__main > .ck-editor__editable {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+}
+
+:root[data-theme="dark"] .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+}
+
+:root[data-theme="dark"] .ck.ck-toolbar {
+    background-color: #2d2d2d !important;
+    border-color: #444 !important;
+}
+
+:root[data-theme="dark"] .ck.ck-toolbar__items button {
+    color: #e0e0e0 !important;
+}
+
+:root[data-theme="dark"] .ck.ck-dropdown__panel {
+    background-color: #2d2d2d !important;
+    border-color: #444 !important;
+}
+
+:root[data-theme="dark"] .ck.ck-list__item .ck-button {
+    color: #e0e0e0 !important;
+}
+
+/* Enlaces dentro del editor */
+:root[data-theme="dark"] .ck.ck-editor__editable a,
+body[data-theme="dark"] .ck.ck-editor__editable a {
+    color: #6db3f2 !important;
+}
+
+/* Tablas dentro del editor */
+:root[data-theme="dark"] .ck.ck-editor__editable table,
+body[data-theme="dark"] .ck.ck-editor__editable table {
+    border-color: #444 !important;
+}
+
+:root[data-theme="dark"] .ck.ck-editor__editable th,
+:root[data-theme="dark"] .ck.ck-editor__editable td,
+body[data-theme="dark"] .ck.ck-editor__editable th,
+body[data-theme="dark"] .ck.ck-editor__editable td {
+    border-color: #444 !important;
+}
