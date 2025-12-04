@@ -98,7 +98,7 @@ class CategoriaAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('nombre',)}
     readonly_fields = ['fecha_creacion', 'fecha_actualizacion', 'mostrar_imagen_grande', 'mostrar_ruta_completa']
     ordering = ['categoria_padre__nombre', 'orden', 'nombre']
-    autocomplete_fields = ['categoria_padre']
+    # No usar autocomplete_fields para poder filtrar con formfield_for_foreignkey
     
     fieldsets = (
         ('Información Principal', {
