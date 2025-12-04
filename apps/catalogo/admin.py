@@ -177,6 +177,21 @@ class CategoriaAdmin(admin.ModelAdmin):
             return obj.obtener_ruta_completa()
         return 'Se mostrará después de guardar'
     mostrar_ruta_completa.short_description = 'Ruta completa'
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """
+        Filtra las opciones de categoría padre para mostrar solo categorías principales.
+        
+        Esto evita crear jerarquías demasiado profundas (más de 2 niveles),
+        permitiendo solo que las categorías principales tengan subcategorías.
+        """
+        if db_field.name == 'categoria_padre':
+            # Solo mostrar categorías que no tienen padre (categorías principales)
+            kwargs['queryset'] = Categoria.objects.filter(
+                categoria_padre__isnull=True,
+                activo=True
+            ).order_by('nombre')
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Marca)
