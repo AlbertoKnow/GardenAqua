@@ -14,6 +14,23 @@
         border: 1px solid var(--color-gray-200);
         position: sticky;
         top: 100px;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+    }
+    /* Scrollbar personalizado para el sidebar */
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .sidebar::-webkit-scrollbar-track {
+        background: var(--color-gray-100);
+        border-radius: 3px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+        background: var(--color-gray-300);
+        border-radius: 3px;
+    }
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--color-gray-400);
     }
     .sidebar-title {
         font-weight: 600;
