@@ -620,7 +620,7 @@ class Presentacion(models.Model):
     class Meta:
         verbose_name = 'Presentación'
         verbose_name_plural = 'Presentaciones'
-        ordering = ['orden', 'nombre']
+        ordering = ['precio']  # Ordenar por precio de menor a mayor
         unique_together = ['producto', 'nombre']
     
     def __str__(self):
