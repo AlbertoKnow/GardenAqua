@@ -237,25 +237,61 @@
             color: var(--color-dark);
         }
         
-        /* Categorías en el menú */
-        .categoria-principal {
-            background-color: var(--color-gray-50);
-            font-weight: 600;
+        /* Menú de categorías con submenús */
+        .dropdown-submenu {
+            position: relative;
         }
         
-        .categoria-principal:hover {
-            background-color: var(--color-gray-200);
+        .dropdown-submenu > .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -0.5rem;
+            margin-left: 0.25rem;
+            min-width: 180px;
         }
         
-        .subcategoria-item {
-            padding-left: 1.5rem;
-            font-size: 0.85rem;
-            color: var(--color-gray-600);
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
         }
         
-        .subcategoria-item:hover {
-            color: var(--color-dark);
-            padding-left: 1.75rem;
+        .dropdown-submenu > .dropdown-item::after {
+            content: "\F285";
+            font-family: "bootstrap-icons";
+            float: right;
+            margin-left: 0.5rem;
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+        
+        .categoria-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+        
+        .categoria-link:hover {
+            background-color: var(--color-gray-100);
+        }
+        
+        /* En móviles, mostrar todo en línea */
+        @media (max-width: 991.98px) {
+            .dropdown-submenu > .dropdown-menu {
+                position: static;
+                left: 0;
+                margin: 0;
+                padding-left: 1rem;
+                box-shadow: none;
+                border: none;
+            }
+            
+            .dropdown-submenu > .dropdown-item::after {
+                transform: rotate(90deg);
+            }
+            
+            .dropdown-submenu.show > .dropdown-item::after {
+                transform: rotate(-90deg);
+            }
         }
 
         /* ================================
@@ -1146,21 +1182,36 @@
                         </a>
                         <ul class="dropdown-menu">
                             {% for cat in categorias %}
+                            {% with subcategorias=cat.obtener_subcategorias_activas %}
+                            {% if subcategorias %}
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item categoria-link" href="{% url 'catalogo:categoria_detalle' cat.slug %}">
+                                    {{ cat.nombre }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'catalogo:categoria_detalle' cat.slug %}">
+                                            <small class="text-muted">Ver todo en {{ cat.nombre }}</small>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% for subcat in subcategorias %}
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'catalogo:categoria_detalle' subcat.slug %}">
+                                            {{ subcat.nombre }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% else %}
                             <li>
-                                <a class="dropdown-item categoria-principal" href="{% url 'catalogo:categoria_detalle' cat.slug %}">
-                                    <strong>{{ cat.nombre }}</strong>
+                                <a class="dropdown-item" href="{% url 'catalogo:categoria_detalle' cat.slug %}">
+                                    {{ cat.nombre }}
                                 </a>
                             </li>
-                            {% for subcat in cat.obtener_subcategorias_activas %}
-                            <li>
-                                <a class="dropdown-item subcategoria-item" href="{% url 'catalogo:categoria_detalle' subcat.slug %}">
-                                    {{ subcat.nombre }}
-                                </a>
-                            </li>
-                            {% endfor %}
-                            {% if not forloop.last %}
-                            <li><hr class="dropdown-divider"></li>
                             {% endif %}
+                            {% endwith %}
                             {% empty %}
                             <li><span class="dropdown-item text-muted">Sin categorías</span></li>
                             {% endfor %}
