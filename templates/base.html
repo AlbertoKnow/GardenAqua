@@ -1144,8 +1144,9 @@
     <nav class="navbar navbar-expand-lg navbar-main" aria-label="Navegación principal">
         <div class="container">
             <!-- Logo -->
-            <a class="navbar-brand" href="{% url 'catalogo:inicio' %}">
-                <img src="{% static 'img/logo.webp' %}" alt="TuAcuario - Acuarios Plantados" height="45">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'catalogo:inicio' %}">
+                <i class="bi bi-water me-2" style="font-size: 1.8rem; color: var(--color-primary);"></i>
+                <span style="font-weight: 600; font-size: 1.4rem; color: var(--color-primary);">TuAcuario</span>
             </a>
             
             <!-- Buscador (Desktop) -->
@@ -1261,8 +1262,9 @@
             <div class="row">
                 <!-- Sobre Nosotros -->
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <span class="footer-logo">
-                        <img src="{% static 'img/logo.webp' %}" alt="TuAcuario" height="40">
+                    <span class="footer-logo d-flex align-items-center mb-3">
+                        <i class="bi bi-water me-2" style="font-size: 1.5rem;"></i>
+                        <span style="font-weight: 600; font-size: 1.2rem;">TuAcuario</span>
                     </span>
                     <p>
                         Nos especializamos en productos para acuarios y peces. 
