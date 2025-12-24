@@ -1,7 +1,7 @@
 """
-Configuración de Django para el proyecto GardenAqua.
+Configuración de Django para el proyecto TuAcuario.
 
-GardenAqua es una tienda online especializada en productos para acuarios y peces.
+TuAcuario es una tienda online especializada en productos para acuarios y peces.
 Este archivo contiene la configuración principal del proyecto Django.
 
 Para más información sobre este archivo, ver:
@@ -178,10 +178,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Documentación: https://resend.com/docs
 
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
-RESEND_FROM_EMAIL = os.environ.get('RESEND_FROM_EMAIL', 'GardenAqua <pedidos@gardenaqua.me>')
+RESEND_FROM_EMAIL = os.environ.get('RESEND_FROM_EMAIL', 'TuAcuario <pedidos@tuacuario.com>')
 RESEND_REPLY_TO = os.environ.get('RESEND_REPLY_TO', '')
 
-# Email donde GardenAqua recibe notificaciones de pedidos nuevos
+# Email donde TuAcuario recibe notificaciones de pedidos nuevos
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', '')
 
 
@@ -195,7 +195,7 @@ WHATSAPP_NUMBER = os.environ.get('WHATSAPP_NUMBER', '51916557975')
 # CONFIGURACIÓN DEL SITIO
 # =============================================================================
 
-SITE_NAME = os.environ.get('SITE_NAME', 'GardenAqua')
+SITE_NAME = os.environ.get('SITE_NAME', 'TuAcuario')
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
 SITE_DESCRIPTION = 'Tu tienda especializada en acuarios y productos para peces'
 

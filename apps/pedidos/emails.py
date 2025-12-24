@@ -174,7 +174,7 @@ def generar_link_whatsapp(pedido):
     
     # Mensaje completo - formato limpio sin emojis
     mensaje = f"""================================
-*PEDIDO GARDENAQUA*
+*PEDIDO TUACUARIO*
 ================================
 
 *N° Pedido:* {pedido.numero_pedido}

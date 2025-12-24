@@ -1,223 +1,161 @@
-# 🐠 GardenAqua
+# 🐠 TuAcuario - E-commerce para Tiendas de Acuarios
 
-Tienda online especializada en productos para acuarios y peces. Desarrollada con Django y desplegada con Docker.
+Sistema de e-commerce completo y profesional diseñado para tiendas de acuarios y productos acuáticos. Desarrollado con Django, PostgreSQL y Docker.
 
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Django](https://img.shields.io/badge/Django-5.2-green)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## 📋 Tabla de Contenidos
+## 🎯 Descripción
 
-- [Características](#-características)
-- [Tecnologías](#-tecnologías)
-- [Requisitos Previos](#-requisitos-previos)
-- [Instalación Local](#-instalación-local)
-- [Despliegue con Docker](#-despliegue-con-docker)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Variables de Entorno](#-variables-de-entorno)
-- [Administración](#-administración)
-- [Licencia](#-licencia)
+**TuAcuario** es una solución e-commerce lista para producción, diseñada específicamente para negocios del sector acuarista. Incluye gestión de catálogo con categorías jerárquicas, múltiples presentaciones por producto, carrito de compras, sistema de pedidos con notificaciones y un panel de administración intuitivo.
+
+### 🖼️ Capturas de Pantalla
+
+> *Añade aquí capturas de tu proyecto desplegado*
 
 ---
 
-## ✨ Características
+## ✨ Características Principales
 
-- 🛒 **Catálogo de productos** con categorías y marcas
-- 🖼️ **Galería de imágenes** con conversión automática a WebP
-- 🛍️ **Carrito de compras** basado en sesiones
-- 📦 **Sistema de pedidos** con seguimiento por código
-- 📧 **Notificaciones por email** usando Resend API
-- 📱 **Integración con WhatsApp** para consultas
-- 🎨 **Diseño minimalista** monocromático (blanco/negro/gris)
-- 🔐 **Panel de administración** Django Admin
-- 🐳 **Dockerizado** para fácil despliegue
+### 📦 Catálogo de Productos
+- Categorías y subcategorías jerárquicas
+- Múltiples marcas
+- Presentaciones con diferentes precios y stock
+- Galería de imágenes por producto
+- Conversión automática a WebP para optimización
+- Filtros por categoría, marca y búsqueda
+
+### 🛒 Carrito de Compras
+- Basado en sesiones (sin registro obligatorio)
+- Actualización de cantidades en tiempo real
+- Persistencia durante la navegación
+
+### 📋 Sistema de Pedidos
+- Checkout simplificado
+- Seguimiento por código único
+- Estados: Pendiente → Confirmado → Enviado → Entregado
+- Historial de cambios de estado
+
+### 📧 Notificaciones
+- Email de confirmación al cliente (Resend API)
+- Notificación al administrador
+- Integración con WhatsApp
+
+### 🎨 Diseño
+- Tema minimalista monocromático
+- Responsive (móvil, tablet, desktop)
+- Bootstrap 5.3
+- Fuente Poppins
+
+### 🔧 Administración
+- Panel Django Admin personalizado
+- Gestión completa de productos, categorías y pedidos
+- Editor de texto enriquecido (CKEditor 5)
 
 ---
 
-## 🛠️ Tecnologías
+## 🛠️ Stack Tecnológico
 
 | Categoría | Tecnología |
 |-----------|------------|
-| Backend | Python 3.13, Django 5.2 |
-| Base de Datos | PostgreSQL 16 (prod), SQLite (dev) |
-| Servidor Web | Nginx + Gunicorn |
-| Contenedores | Docker, Docker Compose |
-| Procesamiento de Imágenes | Pillow (WebP) |
-| Email | Resend API |
-| Frontend | Django Templates, Bootstrap 5.3, Poppins Font |
+| **Backend** | Python 3.13, Django 5.2 |
+| **Base de Datos** | PostgreSQL 16 (prod), SQLite (dev) |
+| **Servidor Web** | Nginx + Gunicorn |
+| **Contenedores** | Docker, Docker Compose |
+| **Imágenes** | Pillow (conversión WebP) |
+| **Email** | Resend API |
+| **Frontend** | Django Templates, Bootstrap 5.3 |
+| **SSL** | Certificados personalizados |
 
 ---
 
-## 📦 Requisitos Previos
+## 📦 Requisitos
 
-### Para desarrollo local:
+### Desarrollo Local
 - Python 3.11+
 - pip
 - Git
 
-### Para despliegue con Docker:
+### Producción (Docker)
 - Docker Engine 20.10+
 - Docker Compose 2.0+
+- VPS con 1GB RAM mínimo
 
 ---
 
-## 🚀 Instalación Local
+## 🚀 Instalación
 
-### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/AlbertoKnow/GardenAqua.git
-cd GardenAqua
-```
-
-### 2. Crear entorno virtual
+### Desarrollo Local
 
 ```bash
-# Windows
+# Clonar repositorio
+git clone https://github.com/tu-usuario/tuacuario.git
+cd tuacuario
+
+# Crear entorno virtual
 python -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Linux/Mac
 
-# Linux/Mac
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-### 3. Instalar dependencias
-
-```bash
+# Instalar dependencias
 pip install -r requirements.txt
-```
 
-### 4. Configurar variables de entorno
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus valores
 
-Crear archivo `.env` en la raíz del proyecto:
-
-```env
-DJANGO_SECRET_KEY=tu-clave-secreta-aqui
-DJANGO_DEBUG=True
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
-
-# Email (opcional)
-RESEND_API_KEY=tu-api-key-de-resend
-RESEND_FROM_EMAIL=tu-email@dominio.com
-
-# WhatsApp (opcional)
-WHATSAPP_NUMBER=51999999999
-```
-
-### 5. Ejecutar migraciones
-
-```bash
+# Migraciones
 python manage.py migrate
-```
 
-### 6. Crear superusuario
-
-```bash
+# Crear superusuario
 python manage.py createsuperuser
-```
 
-### 7. Ejecutar servidor de desarrollo
-
-```bash
+# Ejecutar servidor
 python manage.py runserver
 ```
 
-Accede a:
-- **Sitio web:** http://localhost:8000
-- **Admin:** http://localhost:8000/admin/
+### Producción (Docker)
+
+```bash
+# Configurar variables de entorno
+cp .env.production.example .env
+
+# Construir y ejecutar
+docker compose up -d --build
+
+# Crear superusuario
+docker exec -it tuacuario_web python manage.py createsuperuser
+```
 
 ---
 
-## 🐳 Despliegue con Docker
-
-### Desarrollo con Docker
-
-```bash
-# Construir y levantar contenedores
-docker compose -f docker-compose.dev.yml up --build
-
-# En segundo plano
-docker compose -f docker-compose.dev.yml up -d --build
-```
-
-### Producción con Docker
-
-#### 1. Crear archivo `.env.production`
+## ⚙️ Variables de Entorno
 
 ```env
 # Django
-DJANGO_SECRET_KEY=genera-una-clave-secreta-segura
+DJANGO_SECRET_KEY=tu-clave-secreta-muy-larga
 DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=tu-dominio.com,www.tu-dominio.com,localhost
+DJANGO_ALLOWED_HOSTS=tudominio.com,www.tudominio.com
 
 # Base de datos
-DB_NAME=gardenaqua
-DB_USER=gardenaqua
-DB_PASSWORD=tu-password-seguro
+DB_NAME=tuacuario
+DB_USER=tuacuario
+DB_PASSWORD=contraseña-segura
+DB_HOST=db
+DB_PORT=5432
 
-# Email
-RESEND_API_KEY=tu-api-key
-RESEND_FROM_EMAIL=GardenAqua <pedidos@tu-dominio.com>
-ADMIN_EMAIL=admin@tu-dominio.com
-
-# WhatsApp
-WHATSAPP_NUMBER=51999999999
+# Email (Resend)
+RESEND_API_KEY=re_xxxxxxxxxxxx
+RESEND_FROM_EMAIL=TuAcuario <pedidos@tudominio.com>
+ADMIN_EMAIL=admin@tudominio.com
 
 # Sitio
-SITE_NAME=GardenAqua
-SITE_URL=https://tu-dominio.com
-
-# Seguridad (activar cuando tengas SSL)
-SECURE_SSL_REDIRECT=False
-SESSION_COOKIE_SECURE=False
-CSRF_COOKIE_SECURE=False
-ENABLE_HSTS=False
-```
-
-#### 2. Crear symlink para Docker Compose
-
-```bash
-ln -sf .env.production .env
-```
-
-#### 3. Levantar contenedores de producción
-
-```bash
-# Construir y levantar
-docker compose up -d --build
-
-# Ver logs
-docker compose logs -f
-
-# Ver estado de contenedores
-docker compose ps
-```
-
-#### 4. Crear superusuario en producción
-
-```bash
-docker exec -it gardenaqua_web python manage.py createsuperuser
-```
-
-### Comandos útiles de Docker
-
-```bash
-# Detener contenedores
-docker compose down
-
-# Detener y eliminar volúmenes (¡CUIDADO! Borra datos)
-docker compose down -v
-
-# Reiniciar solo el contenedor web
-docker compose restart web
-
-# Ver logs del contenedor web
-docker logs gardenaqua_web -f
-
-# Ejecutar comando en contenedor
-docker exec -it gardenaqua_web python manage.py shell
+SITE_NAME=TuAcuario
+SITE_URL=https://tudominio.com
+WHATSAPP_NUMBER=51999999999
 ```
 
 ---
@@ -225,102 +163,110 @@ docker exec -it gardenaqua_web python manage.py shell
 ## 📁 Estructura del Proyecto
 
 ```
-GardenAqua/
+tuacuario/
 ├── apps/
-│   ├── catalogo/          # Productos, categorías, marcas
-│   ├── carrito/           # Carrito de compras (sesiones)
-│   └── pedidos/           # Pedidos y checkout
-├── gardenaqua/            # Configuración del proyecto
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── templates/             # Plantillas HTML
-│   ├── base.html
-│   ├── catalogo/
-│   ├── carrito/
-│   └── pedidos/
-├── static/                # Archivos estáticos
-├── media/                 # Archivos subidos (imágenes)
-├── nginx/                 # Configuración de Nginx
-├── scripts/               # Scripts de utilidad
-├── docker-compose.yml     # Docker Compose producción
-├── docker-compose.dev.yml # Docker Compose desarrollo
-├── Dockerfile             # Imagen Docker
-├── requirements.txt       # Dependencias Python
-└── README.md
+│   ├── catalogo/       # Productos, categorías, marcas
+│   ├── carrito/        # Carrito de compras
+│   └── pedidos/        # Gestión de pedidos
+├── gardenaqua/         # Configuración Django
+├── templates/          # Plantillas HTML
+├── static/             # Archivos estáticos
+├── media/              # Archivos subidos
+├── nginx/              # Configuración Nginx
+├── scripts/            # Scripts de utilidad
+├── docker-compose.yml  # Orquestación Docker
+├── Dockerfile          # Imagen Docker
+└── requirements.txt    # Dependencias Python
 ```
 
 ---
 
-## 🔧 Variables de Entorno
-
-| Variable | Descripción | Requerido |
-|----------|-------------|-----------|
-| `DJANGO_SECRET_KEY` | Clave secreta de Django | ✅ Sí |
-| `DJANGO_DEBUG` | Modo debug (True/False) | ✅ Sí |
-| `DJANGO_ALLOWED_HOSTS` | Hosts permitidos (separados por coma) | ✅ Sí |
-| `DB_ENGINE` | Motor de BD (postgresql/sqlite3) | No |
-| `DB_NAME` | Nombre de la base de datos | Producción |
-| `DB_USER` | Usuario de la BD | Producción |
-| `DB_PASSWORD` | Contraseña de la BD | Producción |
-| `DB_HOST` | Host de la BD | Producción |
-| `DB_PORT` | Puerto de la BD | Producción |
-| `RESEND_API_KEY` | API Key de Resend | No |
-| `RESEND_FROM_EMAIL` | Email remitente | No |
-| `WHATSAPP_NUMBER` | Número de WhatsApp | No |
-| `SECURE_SSL_REDIRECT` | Redirigir a HTTPS | No |
-| `SESSION_COOKIE_SECURE` | Cookies seguras | No |
-| `CSRF_COOKIE_SECURE` | CSRF seguro | No |
-| `ENABLE_HSTS` | Activar HSTS | No |
-
----
-
-## 👤 Administración
-
-### Acceso al panel de administración
-
-- **URL:** `/admin/`
-- **Funcionalidades:**
-  - Gestionar categorías
-  - Gestionar marcas
-  - Gestionar productos y presentaciones
-  - Gestionar imágenes de productos
-  - Ver y gestionar pedidos
-  - Actualizar estados de pedidos
-
-### Conversión de imágenes a WebP
-
-Las imágenes se convierten automáticamente a WebP al subirlas. Para convertir imágenes existentes:
+## 🔧 Comandos Útiles
 
 ```bash
-python manage.py convertir_imagenes_webp
+# Logs del contenedor
+docker logs tuacuario_web -f
+
+# Shell de Django
+docker exec -it tuacuario_web python manage.py shell
+
+# Migraciones
+docker exec -it tuacuario_web python manage.py migrate
+
+# Recolectar estáticos
+docker exec -it tuacuario_web python manage.py collectstatic --noinput
 ```
+
+---
+
+## 🎨 Personalización
+
+### Cambiar Logo
+Reemplaza `static/img/logo.webp` con tu logo (formato WebP recomendado).
+
+### Colores
+Edita las variables CSS en `templates/base.html`:
+```css
+:root {
+    --color-primary: #111111;
+    --color-accent: #333333;
+    /* ... */
+}
+```
+
+### Información de Contacto
+Actualiza en `templates/base.html`:
+- WhatsApp
+- Email
+- Redes sociales
+
+---
+
+## 📈 Características Futuras
+
+- [ ] Pasarela de pagos (Mercado Pago, PayPal)
+- [ ] Sistema de usuarios registrados
+- [ ] Wishlist / Favoritos
+- [ ] Cupones de descuento
+- [ ] Reviews de productos
+- [ ] Integración con inventario
+
+---
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/nueva-caracteristica`)
+3. Commit tus cambios (`git commit -m 'Añadir nueva característica'`)
+4. Push a la rama (`git push origin feature/nueva-caracteristica`)
+5. Abre un Pull Request
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE.MD](LICENSE.MD) para más detalles.
+Este proyecto está bajo la Licencia MIT. Ver [LICENSE.MD](LICENSE.MD) para más detalles.
 
 ---
 
-## 🤝 Contribuir
+## 👨‍💻 Autor
 
-1. Fork el repositorio
-2. Crea una rama (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit tus cambios (`git commit -m 'feat: agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abre un Pull Request
+Desarrollado por **Alberto** - [GitHub](https://github.com/AlbertoKnow)
 
 ---
 
-## 📞 Contacto
+## 💼 Contacto Profesional
 
-- **Sitio Web:** [gardenaqua.me](http://gardenaqua.me)
-- **Email:** luis.huamani.dev@gmail.com
+¿Interesado en un proyecto similar o personalización?
+
+- 📧 Email: [tu-email@ejemplo.com]
+- 💼 LinkedIn: [tu-linkedin]
+- 🐙 GitHub: [@AlbertoKnow](https://github.com/AlbertoKnow)
 
 ---
 
 <p align="center">
-  Hecho con ❤️ para GardenAqua
+  <sub>Hecho con ❤️ y Django</sub>
 </p>

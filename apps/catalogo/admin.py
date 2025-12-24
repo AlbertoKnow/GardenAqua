@@ -441,6 +441,6 @@ class EspecificacionProductoAdmin(admin.ModelAdmin):
 
 
 # Personalización del sitio de administración
-admin.site.site_header = 'GardenAqua - Panel de Administración'
-admin.site.site_title = 'GardenAqua Admin'
-admin.site.index_title = 'Bienvenido al Panel de Administración de GardenAqua'
+admin.site.site_header = 'TuAcuario - Panel de Administración'
+admin.site.site_title = 'TuAcuario Admin'
+admin.site.index_title = 'Bienvenido al Panel de Administración'

@@ -6,7 +6,7 @@ applyTo: '**'
 Usemos buenas prácticas de desarrollo para crear una **tienda online robusta y escalable** con arquitectura de código limpio.
 
 ## 📄 Contexto del Proyecto
-Estamos desarrollando una tienda online para un acuario llamado "GardenAqua" que vende productos relacionados con peces y acuarios. La tienda debe permitir a los usuarios navegar por categorías de productos, ver detalles de productos, agregar productos al carrito y realizar pedidos.
+Estamos desarrollando una tienda online para acuarios llamada "TuAcuario" que vende productos relacionados con peces y acuarios. La tienda debe permitir a los usuarios navegar por categorías de productos, ver detalles de productos, agregar productos al carrito y realizar pedidos.
 
 ## 💻 Stack Tecnológico
 * **Framework Principal:** Django (Python).
