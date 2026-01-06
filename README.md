@@ -261,8 +261,8 @@ Desarrollado por **Alberto** - [GitHub](https://github.com/AlbertoKnow)
 
 ¿Interesado en un proyecto similar o personalización?
 
-- 📧 Email: [tu-email@ejemplo.com]
-- 💼 LinkedIn: [tu-linkedin]
+- 📧 Email: luis.huamani.dev@gmail.com
+- 💼 LinkedIn: https://www.linkedin.com/in/luis-huaman%C3%AD/
 - 🐙 GitHub: [@AlbertoKnow](https://github.com/AlbertoKnow)
 
 ---
